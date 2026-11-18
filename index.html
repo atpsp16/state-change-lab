@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="สื่อการสอนวิทยาศาสตร์ ป.5 เรื่องการเปลี่ยนสถานะของสาร: ตู้เย็นมหัศจรรย์ โฮโลแกรม และ AR">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>ห้องทดลองสถานะสาร</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@500;600&family=Sarabun:wght@400;700&display=swap">
+<style>
+/* Layout: a pocket science lab of chunky rounded toys — home with three mode cards; mode 1 is a three-place scene, modes 2 and 3 are full-screen stages */
+:root {
+  --bg: #EEF7FF;
+  --surface: #FFFFFF;
+  --ink: #142640;
+  --muted: #465C76;
+  --line: #D4E4F3;
+  --line-strong: #9DB6CF;
+  --cold: #B9E5FF;
+  --warm: #FFE38A;
+  --hot: #FFAA91;
+  --ice: #9BDFFF;
+  --water: #43C1EE;
+  --vapour: #CDDDEA;
+  --accent: #0058AF;
+  --success: #08704F;
+  --char-line: #142640;
+  --cheek-pink: #FF9DB5;
+  --cheek-blue: #7DBDFF;
+  --cheek-coral: #FF8A70;
+  --btn-hot: #FFAD82;
+  --btn-cold: #A9DFFF;
+  --btn-ink: #142640;
+  --fridge: #FFFFFF;
+  --fridge-in: #DDF3FF;
+  --grass: #8ED39A;
+  --grass-2: #62B874;
+  --sun: #FFC93C;
+  --sun-ray: #FFAE1A;
+  --stove: #56657C;
+  --stove-top: #3E4A5C;
+  --pan: #2F3A4B;
+  --flame: #FF7A3D;
+  --flame-core: #FFD45C;
+  --white: #FFFFFF;
+  --black: #000000;
+  --shadow: 0 2px 0 rgba(20, 38, 64, 0.06), 0 10px 24px rgba(20, 38, 64, 0.08);
+  --font-display: "Mitr", "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  --font-body: "Sarabun", "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101B2D; --surface: #1B2B44; --ink: #F4F9FF; --muted: #B5C7DC; --line: #2B3F5C; --line-strong: #4F6C8F;
+    --cold: #245578; --warm: #70541D; --hot: #813F34;
+    --ice: #A5E7FF; --water: #63D3F8; --vapour: #DCEEFF; --accent: #85C7FF; --success: #69DFAD;
+    --fridge: #D6E4F1; --fridge-in: #A9D3EF;
+    --grass: #3F8C55; --grass-2: #2F6E43;
+    --stove: #3B4759; --stove-top: #2A3443; --pan: #1A222E;
+    --shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 10px 24px rgba(0, 0, 0, 0.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101B2D; --surface: #1B2B44; --ink: #F4F9FF; --muted: #B5C7DC; --line: #2B3F5C; --line-strong: #4F6C8F;
+  --cold: #245578; --warm: #70541D; --hot: #813F34;
+  --ice: #A5E7FF; --water: #63D3F8; --vapour: #DCEEFF; --accent: #85C7FF; --success: #69DFAD;
+  --fridge: #D6E4F1; --fridge-in: #A9D3EF;
+  --grass: #3F8C55; --grass-2: #2F6E43;
+  --stove: #3B4759; --stove-top: #2A3443; --pan: #1A222E;
+  --shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 10px 24px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html.lock, html.lock body { overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+}
+button, a { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- shared buttons ---------- */
+.tbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+.tbtn:active { transform: translateY(2px); }
+.tbtn svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding-block: 4px;
+}
+.topbar h1 {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+}
+.topbar .tbtn small { font-size: 15px; }
+@media (max-width: 480px) { .topbar .tbtn .lbl { display: none; } }
+.fixed-view .topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 5;
+  padding-top: calc(4px + env(safe-area-inset-top, 0px));
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
+}
+.v-holo .topbar { color: #E6F7FF; }
+.v-holo .tbtn { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.22); color: #E6F7FF; }
+.v-ar .topbar { color: #F4F9FF; background: linear-gradient(180deg, rgba(8, 18, 32, 0.55), transparent); }
+.v-ar .tbtn { background: rgba(16, 27, 45, 0.55); border-color: rgba(255, 255, 255, 0.35); color: #F4F9FF; backdrop-filter: blur(6px); }
+
+/* ---------- home ---------- */
+.v-home { padding-block: 28px 48px; }
+.home-head { text-align: center; display: grid; gap: 6px; justify-items: center; margin-bottom: 26px; }
+.eyebrow { margin: 0; font-weight: 700; font-size: 15px; letter-spacing: 0.04em; color: var(--muted); }
+.home-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.home-head p.lede { margin: 0; color: var(--muted); max-width: 46ch; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 767px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 3px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: 0 6px 0 var(--line-strong);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--line-strong); }
+.card:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--line-strong); }
+.card .ill { height: 120px; border-radius: 14px; overflow: hidden; display: block; }
+.card .ill svg { width: 100%; height: 100%; display: block; }
+.card .num { font-weight: 700; font-size: 14px; color: var(--muted); }
+.card h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1.3; }
+.card p { margin: 2px 0 0; color: var(--muted); }
+.card .go { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); }
+.card .go svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 767px) {
+  .card { grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto; align-items: center; column-gap: 14px; }
+  .card .ill { height: 72px; width: 72px; }
+  .card .go { display: none; }
+}
+.home-foot { margin-top: 24px; text-align: center; color: var(--muted); font-size: 15px; }
+
+/* ---------- mode 1: fridge scene ---------- */
+.v-fridge { padding-bottom: 32px; }
+.scene {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  height: clamp(340px, 60vh, 560px);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media (max-width: 640px) {
+  .scene { grid-template-columns: 1fr 1fr; grid-template-rows: 1.1fr 0.9fr; height: clamp(440px, 125vw, 640px); }
+  .z-stove { grid-column: 1 / -1; }
+}
+.zone {
+  position: relative;
+  min-width: 0;
+  border-radius: 20px;
+  border: 3px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.18s ease-out;
+}
+.z-freezer { background: linear-gradient(180deg, var(--cold), var(--bg)); }
+.z-sun { background: linear-gradient(180deg, var(--warm), var(--bg)); }
+.z-stove { background: linear-gradient(180deg, var(--hot), var(--bg)); }
+.zart { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.zlabel {
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 2;
+  display: grid;
+  line-height: 1.2;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  pointer-events: none;
+}
+.zlabel b { font-family: var(--font-display); font-weight: 600; font-size: 17px; }
+.zlabel small { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.drop-hint {
+  position: absolute;
+  left: 50%; bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 2;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface);
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+  pointer-events: none;
+}
+.scene.dragging .zone { border-style: dashed; border-color: var(--line-strong); }
+.scene.dragging .zone.over { border-style: solid; border-color: var(--accent); }
+.scene.dragging .zone.over .drop-hint { opacity: 1; }
+.mk { fill: none; stroke: none; }
+.f-body { fill: var(--fridge); stroke: var(--char-line); stroke-width: 4; }
+.f-cav { fill: var(--fridge-in); stroke: var(--char-line); stroke-width: 3; }
+.f-door { fill: var(--fridge); stroke: var(--char-line); stroke-width: 3; stroke-linejoin: round; }
+.f-shelf { stroke: var(--white); stroke-width: 5; stroke-linecap: round; opacity: 0.9; }
+.f-low { fill: var(--fridge); stroke: var(--char-line); stroke-width: 3; }
+.f-handle { fill: var(--line-strong); }
+.f-frost { fill: var(--white); }
+.f-ice { fill: var(--ice); stroke: var(--char-line); stroke-width: 2; }
+.sun-body { fill: var(--sun); stroke: var(--char-line); stroke-width: 3; }
+.sun-ray { stroke: var(--sun-ray); stroke-width: 6; stroke-linecap: round; }
+.hill { fill: var(--grass); stroke: var(--char-line); stroke-width: 3; }
+.hill-2 { fill: var(--grass-2); }
+.flower { fill: var(--white); stroke: var(--char-line); stroke-width: 1.5; }
+.flower-c { fill: var(--sun); }
+.st-body { fill: var(--stove); stroke: var(--char-line); stroke-width: 3; }
+.st-top { fill: var(--stove-top); }
+.st-knob { fill: var(--surface); stroke: var(--char-line); stroke-width: 2.5; }
+.pan { fill: var(--pan); stroke: var(--char-line); stroke-width: 3; stroke-linejoin: round; }
+.pan-rim { fill: var(--pan); stroke: var(--char-line); stroke-width: 3; }
+.flame { fill: var(--flame); stroke: var(--char-line); stroke-width: 2; stroke-linejoin: round; transform-box: fill-box; transform-origin: 50% 100%; }
+.flame-c { fill: var(--flame-core); }
+.face-line { fill: none; stroke: var(--char-line); stroke-width: 3; stroke-linecap: round; }
+.face-dot { fill: var(--char-line); }
+.ck-pink { fill: var(--cheek-pink); }
+.ck-blue { fill: var(--cheek-blue); }
+.ck-coral { fill: var(--cheek-coral); }
+@media (prefers-reduced-motion: no-preference) {
+  .flame { animation: flick 0.7s ease-in-out infinite alternate; }
+  .flame:nth-of-type(2) { animation-delay: -0.25s; }
+  .flame:nth-of-type(3) { animation-delay: -0.5s; }
+  .sun-rays { animation: spin 18s linear infinite; transform-box: fill-box; transform-origin: center; }
+}
+@keyframes flick { from { transform: scaleY(0.82) scaleX(1.05); } to { transform: scaleY(1.08) scaleX(0.96); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* character */
+.char {
+  position: absolute;
+  left: 0; top: 0;
+  width: 90px; height: 90px;
+  z-index: 4;
+  touch-action: none;
+  cursor: grab;
+  will-change: transform;
+  border-radius: 24px;
+}
+.char.snap { transition: transform 0.18s ease-out, width 0.18s ease-out, height 0.18s ease-out; }
+.char.dragging { cursor: grabbing; filter: drop-shadow(0 12px 10px rgba(20, 38, 64, 0.25)); }
+.char > svg { width: 100%; height: 100%; display: block; overflow: visible; pointer-events: none; }
+.char.gone { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .char.gone > svg { animation: floatAway 2.4s ease-in forwards; }
+  .char.pop > svg { animation: pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1); }
+  .char.dragging > svg { animation: wiggle 0.5s ease-in-out infinite alternate; }
+}
+.char.gone.done > svg { opacity: 0; }
+@keyframes floatAway { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-140px) scale(0.85); opacity: 0; } }
+@keyframes pop { 0% { transform: scale(0.3); } 100% { transform: scale(1); } }
+@keyframes wiggle { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.ch-ice { fill: var(--ice); stroke: var(--char-line); stroke-width: 3; }
+.ch-water { fill: var(--water); stroke: var(--char-line); stroke-width: 3; }
+.ch-vap { fill: var(--vapour); stroke: var(--char-line); stroke-width: 3; stroke-dasharray: 6 5; }
+.ch-hl { fill: none; stroke: var(--white); stroke-width: 4; stroke-linecap: round; opacity: 0.9; }
+.ch-sweat { fill: var(--water); stroke: var(--char-line); stroke-width: 2; }
+.ch-sheen { fill: var(--white); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .char.sheen .ch-sheen { animation: sheen 0.6s ease-out; }
+}
+@keyframes sheen { 0% { opacity: 0; transform: translateX(-40px); } 40% { opacity: 0.7; } 100% { opacity: 0; transform: translateX(60px); } }
+
+/* effects */
+.fx { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; border-radius: 20px; }
+.wisp, .bub, .drip, .spark { position: absolute; display: block; }
+.wisp { width: 22px; height: 38px; animation: wisp 1.8s ease-out forwards; }
+.wisp svg { width: 100%; height: 100%; fill: none; stroke: var(--vapour); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 1px rgba(20, 38, 64, 0.5)); }
+@keyframes wisp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 25% { opacity: 0.95; } 100% { transform: translateY(-90px) scale(1.15); opacity: 0; } }
+.bub { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--white); background: rgba(255, 255, 255, 0.25); animation: bub 0.9s ease-out forwards; }
+@keyframes bub { 0% { transform: translateY(0) scale(0.4); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-46px) scale(1.2); opacity: 0; } }
+.drip { width: 8px; height: 11px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: var(--water); border: 1.5px solid var(--char-line); animation: drip 0.8s ease-in forwards; }
+@keyframes drip { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(26px); opacity: 0; } }
+.spark { width: 16px; height: 16px; animation: spark 0.6s ease-out forwards; }
+.spark svg { width: 100%; height: 100%; fill: var(--white); stroke: var(--accent); stroke-width: 1.5; }
+@keyframes spark { 0% { transform: scale(0) rotate(0); opacity: 0; } 40% { opacity: 1; } 100% { transform: scale(1.2) rotate(60deg); opacity: 0; } }
+
+.toast {
+  position: absolute;
+  top: 12px; left: 50%;
+  z-index: 6;
+  transform: translate(-50%, -8px);
+  max-width: calc(100% - 24px);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* tray */
+.tray {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: auto auto minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 3px solid var(--line-strong);
+  background: var(--surface);
+}
+@media (max-width: 760px) {
+  .tray { grid-template-columns: 1fr 1fr; }
+  .tray .amount, .tray .explain, .tray .reset { grid-column: 1 / -1; }
+}
+.pill {
+  justify-self: start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--char-line);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--btn-ink);
+  background: var(--btn-cold);
+  white-space: nowrap;
+}
+.pill[data-k="liquid"], .pill[data-k="melting"], .pill[data-k="evaporating"] { background: #8FDDF8; }
+.pill[data-k="boiling"] { background: var(--btn-hot); }
+.pill[data-k="gas"], .pill[data-k="gone"], .pill[data-k="condensing"] { background: #E3ECF4; }
+.pill[data-k="freezing"] { background: var(--btn-cold); }
+.temp { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; }
+.temp svg { width: 22px; height: 30px; }
+.th-glass { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.th-red { fill: #E5484D; }
+.amount { display: grid; gap: 4px; font-size: 15px; color: var(--muted); }
+.amount .bar { height: 14px; border-radius: 7px; background: var(--line); overflow: hidden; border: 2px solid var(--line-strong); }
+.amount .bar span { display: block; height: 100%; width: 100%; background: var(--water); transition: width 0.2s linear; }
+.reset { justify-self: end; }
+.explain { grid-column: 1 / -1; margin: 0; padding-top: 10px; border-top: 2px dashed var(--line); font-size: 18px; }
+.tbtn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.how { margin: 12px 0 0; color: var(--muted); font-size: 15px; text-align: center; }
+
+/* ---------- modes 2 + 3: full-screen stages ---------- */
+.fixed-view { position: fixed; inset: 0; z-index: 20; overflow: hidden; }
+.v-holo { background: var(--black); }
+.v-ar { background: #0B1424; }
+.stage-area { position: absolute; left: 0; right: 0; bottom: 0; top: calc(60px + env(safe-area-inset-top, 0px)); }
+.v-ar .stage-area { top: 0; }
+.stage-area canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#hcv, #acv { touch-action: none; }
+.pctrl {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 10px;
+}
+.pctrl .spill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--char-line);
+  background: #FFFFFF;
+  color: #142640;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+  text-align: center;
+}
+.pctrl .smsg { margin: 0; max-width: 300px; text-align: center; font-size: 15px; line-height: 1.4; color: #E6F7FF; min-height: 2.8em; }
+.pbtns { display: flex; gap: 12px; }
+.pbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 144px;
+  height: 64px;
+  padding: 0 18px;
+  border-radius: 20px;
+  border: 3px solid var(--char-line);
+  box-shadow: 0 5px 0 var(--char-line);
+  color: var(--btn-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, opacity 0.2s;
+}
+.pbtn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--char-line); }
+.pbtn[disabled] { opacity: 0.4; cursor: default; transform: none; box-shadow: 0 5px 0 var(--char-line); }
+.pbtn.hot { background: var(--btn-hot); }
+.pbtn.cold { background: var(--btn-cold); }
+.pbtn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.pbtn.hot svg circle { fill: currentColor; }
+/* hologram controls sit outside the projection square */
+.holo-ctrl { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); }
+@media (orientation: landscape) {
+  .holo-ctrl { left: auto; bottom: auto; top: 50%; right: max(12px, env(safe-area-inset-right, 0px)); transform: translateY(-50%); }
+  .holo-ctrl .pbtns { flex-direction: column; }
+  .holo-ctrl .smsg { max-width: 180px; }
+}
+.sizer { display: inline-flex; align-items: center; gap: 6px; color: #9FB7C9; font-size: 14px; }
+.sizer button { min-width: 44px; min-height: 40px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.25); background: transparent; color: #E6F7FF; font-size: 20px; cursor: pointer; }
+.holo-tip {
+  position: absolute;
+  left: max(14px, env(safe-area-inset-left, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 4;
+  margin: 0;
+  max-width: 220px;
+  color: #9FB7C9;
+  font-size: 14px;
+}
+@media (orientation: portrait) { .holo-tip { display: none; } }
+
+/* help sheet */
+.sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(4, 10, 18, 0.7);
+}
+.sheet-card {
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 20px;
+  border: 3px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+.sheet-card h2 { margin: 0 0 8px; font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+.sheet-card ol { margin: 0 0 12px; padding-left: 1.3em; display: grid; gap: 6px; }
+.sheet-card svg { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto 10px; }
+.tp-shape { fill: var(--cold); stroke: var(--ink); stroke-width: 2.5; }
+.tp-dim { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 3; fill: none; }
+.tp-text { fill: var(--ink); font-family: var(--font-body); font-size: 14px; font-weight: 700; }
+.sheet-card .note { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+
+/* AR */
+.ar-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% 100%, #3B2A1E 0 38%, transparent 38.5%),
+    linear-gradient(180deg, #BFE3FF 0%, #E8F4FF 58%, #C9A27A 58.5%, #A9825C 100%);
+}
+.ar-backdrop::after {
+  content: "";
+  position: absolute;
+  left: 8%; right: 8%; top: 12%; height: 30%;
+  border-radius: 16px;
+  border: 6px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, #8CCBFF, #D9F0FF);
+  box-shadow: inset 0 0 0 3px #142640;
+  opacity: 0.85;
+}
+#arVid, #arImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ar-start {
+  position: absolute;
+  z-index: 6;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100% - 32px));
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 20px;
+  border-radius: 22px;
+  border: 3px solid var(--char-line);
+  box-shadow: 0 6px 0 var(--char-line);
+  background: #FFFFFF;
+  color: #142640;
+  text-align: center;
+}
+.ar-start h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 24px; }
+.ar-start p { margin: 0; color: #465C76; }
+.ar-start .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ar-start .tbtn { background: #FFFFFF; border-color: #9DB6CF; color: #142640; }
+.ar-start .tbtn.primary { background: #0058AF; border-color: #0058AF; color: #FFFFFF; }
+.ar-start .msg { font-size: 15px; color: #9A3412; }
+.ar-ctrl { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); }
+.ar-ctrl .smsg { color: #FFFFFF; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
+.ar-hint {
+  position: absolute;
+  z-index: 4;
+  top: calc(66px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(16, 27, 45, 0.55);
+  color: #FFFFFF;
+  font-size: 14px;
+  white-space: nowrap;
+}
+#arVid.mirror { transform: scaleX(-1); }
+.ar-tools {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  transform: translateY(-50%);
+  display: grid;
+  gap: 8px;
+}
+.ar-toast {
+  position: absolute;
+  z-index: 7;
+  top: calc(106px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #142640;
+  color: #FFFFFF;
+  font-weight: 700;
+  text-align: center;
+}
+</style>
+
+</head>
+<body>
+<!-- ======================= HOME ======================= -->
+<main class="view v-home wrap" id="vHome" aria-labelledby="homeTitle">
+  <header class="home-head">
+    <p class="eyebrow">วิทยาศาสตร์ ป.5</p>
+    <h1 id="homeTitle">การเปลี่ยนสถานะของสาร</h1>
+    <p class="lede">เลือกโหมดที่อยากเล่น เล่นต่อกันได้ทั้ง 3 โหมด</p>
+  </header>
+  <nav class="cards" aria-label="เลือกโหมด">
+    <a class="card" href="#fridge" id="cardFridge">
+      <span class="ill" aria-hidden="true">
+        <svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice">
+          <rect width="120" height="120" style="fill: var(--cold)"/>
+          <rect x="120" width="120" height="120" style="fill: var(--warm)"/>
+          <rect x="22" y="14" width="76" height="102" rx="12" class="f-body"/>
+          <rect x="30" y="22" width="60" height="50" rx="8" class="f-cav"/>
+          <rect x="30" y="78" width="60" height="32" rx="6" class="f-low"/>
+          <g class="sun-rays"><g class="sun-ray"><line x1="196" y1="10" x2="196" y2="18"/><line x1="196" y1="62" x2="196" y2="70"/><line x1="166" y1="40" x2="174" y2="40"/><line x1="218" y1="40" x2="226" y2="40"/></g></g>
+          <circle cx="196" cy="40" r="16" class="sun-body"/>
+          <path class="hill" d="M110 120 L110 98 Q170 84 250 96 L250 120 Z"/>
+          <g transform="translate(128 64) scale(0.42)">
+            <rect class="ch-ice" x="12" y="12" width="76" height="76" rx="18"/>
+            <path class="ch-hl" d="M22 40 Q22 22 40 22"/>
+            <circle class="face-dot" cx="39" cy="52" r="3.4"/><circle class="face-dot" cx="61" cy="52" r="3.4"/>
+            <ellipse class="ck-pink" cx="30" cy="61" rx="5" ry="3"/><ellipse class="ck-pink" cx="70" cy="61" rx="5" ry="3"/>
+            <path class="face-line" d="M44 62 Q50 68 56 62"/>
+          </g>
+        </svg>
+      </span>
+      <span>
+        <span class="num">โหมด 1</span>
+        <h2>ตู้เย็นมหัศจรรย์</h2>
+        <p>ลากน้องน้ำแข็งไปดูว่าจะเปลี่ยนเป็นอะไร</p>
+        <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </a>
+    <a class="card" href="#holo" id="cardHolo">
+      <span class="ill" aria-hidden="true">
+        <svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice">
+          <rect width="240" height="120" fill="#000"/>
+          <rect x="96" y="36" width="48" height="48" fill="none" stroke="#4FE4F4" stroke-opacity="0.5" stroke-width="1.5"/>
+          <rect x="112" y="52" width="16" height="16" fill="none" stroke="#4FE4F4" stroke-opacity="0.7" stroke-width="1.5"/>
+          <path d="M96 36 L112 52 M144 36 L128 52 M96 84 L112 68 M144 84 L128 68" stroke="#4FE4F4" stroke-opacity="0.5" stroke-width="1.5"/>
+          <g fill="#4FE4F4">
+            <circle cx="114" cy="16" r="4"/><circle cx="126" cy="16" r="4"/><circle cx="120" cy="25" r="4"/>
+            <circle cx="114" cy="104" r="4"/><circle cx="126" cy="104" r="4"/><circle cx="120" cy="95" r="4"/>
+            <circle cx="70" cy="54" r="4"/><circle cx="70" cy="66" r="4"/><circle cx="79" cy="60" r="4"/>
+            <circle cx="170" cy="54" r="4"/><circle cx="170" cy="66" r="4"/><circle cx="161" cy="60" r="4"/>
+          </g>
+        </svg>
+      </span>
+      <span>
+        <span class="num">โหมด 2</span>
+        <h2>โฮโลแกรม</h2>
+        <p>ดูอนุภาคผ่านพีระมิดใสเมื่อร้อนขึ้นหรือเย็นลง</p>
+        <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </a>
+    <a class="card" href="#ar" id="cardAr">
+      <span class="ill" aria-hidden="true">
+        <svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice">
+          <rect width="240" height="120" fill="#CFE8FF"/>
+          <rect y="78" width="240" height="42" fill="#C9A27A"/>
+          <rect x="62" y="10" width="116" height="104" rx="14" fill="none" stroke="#142640" stroke-width="4"/>
+          <ellipse cx="120" cy="86" rx="30" ry="6" fill="#142640" opacity="0.25"/>
+          <g stroke="#142640" stroke-width="2">
+            <circle cx="108" cy="58" r="8" fill="#43C1EE"/><circle cx="126" cy="54" r="8" fill="#43C1EE"/><circle cx="117" cy="40" r="8" fill="#9BDFFF"/>
+            <circle cx="134" cy="68" r="8" fill="#43C1EE"/><circle cx="112" cy="72" r="8" fill="#9BDFFF"/>
+          </g>
+          <path d="M156 24 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#FFFFFF" stroke="#142640" stroke-width="1.5"/>
+        </svg>
+      </span>
+      <span>
+        <span class="num">โหมด 3</span>
+        <h2>AR</h2>
+        <p>วางแบบจำลองอนุภาคในห้องของเรา</p>
+        <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </a>
+  </nav>
+  <p class="home-foot">ใช้ได้ทั้งแท็บเล็ต มือถือ และคอมพิวเตอร์ · แตะหรือคลิกเพื่อเลือก</p>
+</main>
+
+<!-- ======================= MODE 1 ======================= -->
+<section class="view v-fridge" id="vFridge" hidden aria-labelledby="m1Title">
+  <div class="wrap">
+    <header class="topbar">
+      <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
+      <h1 id="m1Title">ตู้เย็นมหัศจรรย์</h1>
+      <a class="tbtn" href="#holo"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+    </header>
+
+    <div class="scene" id="scene">
+      <div class="zone z-freezer" id="zFreezer" data-zone="freezer" role="button" tabindex="0" aria-label="ช่องแช่แข็ง ลบ 18 องศาเซลเซียส">
+        <span class="zlabel"><b>ช่องแช่แข็ง</b><small>−18 °C</small></span>
+        <svg class="zart" viewBox="0 0 300 300" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <rect x="44" y="18" width="212" height="300" rx="26" class="f-body"/>
+          <rect x="62" y="38" width="176" height="150" rx="16" class="f-cav"/>
+          <path class="f-door" d="M44 42 L14 30 L14 200 L44 188 Z"/>
+          <line class="f-shelf" x1="70" y1="172" x2="230" y2="172"/>
+          <g class="f-frost">
+            <circle cx="84" cy="58" r="3"/><circle cx="214" cy="66" r="2.5"/><circle cx="96" cy="120" r="2"/><circle cx="208" cy="128" r="3"/><circle cx="150" cy="54" r="2"/>
+          </g>
+          <rect class="f-ice" x="196" y="150" width="18" height="18" rx="4"/>
+          <rect class="f-ice" x="86" y="152" width="16" height="16" rx="4"/>
+          <rect x="62" y="200" width="176" height="110" rx="14" class="f-low"/>
+          <rect x="214" y="216" width="10" height="46" rx="5" class="f-handle"/>
+          <rect id="mkFreezer" class="mk" x="105" y="82" width="90" height="90"/>
+        </svg>
+        <span class="drop-hint">ปล่อยตรงนี้</span>
+      </div>
+      <div class="zone z-sun" id="zSun" data-zone="sun" role="button" tabindex="0" aria-label="กลางแดด ประมาณ 35 องศาเซลเซียส">
+        <span class="zlabel"><b>กลางแดด</b><small>ประมาณ 35 °C</small></span>
+        <svg class="zart" viewBox="0 0 300 300" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <g class="sun-rays">
+            <g class="sun-ray">
+              <line x1="222" y1="12" x2="222" y2="24"/><line x1="222" y1="120" x2="222" y2="132"/>
+              <line x1="162" y1="72" x2="174" y2="72"/><line x1="270" y1="72" x2="282" y2="72"/>
+              <line x1="180" y1="30" x2="188" y2="38"/><line x1="256" y1="106" x2="264" y2="114"/>
+              <line x1="264" y1="30" x2="256" y2="38"/><line x1="188" y1="106" x2="180" y2="114"/>
+            </g>
+          </g>
+          <circle cx="222" cy="72" r="36" class="sun-body"/>
+          <circle class="face-dot" cx="211" cy="68" r="3.2"/><circle class="face-dot" cx="233" cy="68" r="3.2"/>
+          <ellipse class="ck-coral" cx="203" cy="78" rx="5" ry="3"/><ellipse class="ck-coral" cx="241" cy="78" rx="5" ry="3"/>
+          <path class="face-line" d="M215 80 Q222 87 229 80"/>
+          <path class="hill" d="M-20 320 L-20 238 Q 70 206 150 226 Q 230 246 320 220 L320 320 Z"/>
+          <path class="hill-2" d="M-20 320 L-20 272 Q 90 252 170 268 Q 250 284 320 262 L320 320 Z"/>
+          <g><circle class="flower" cx="46" cy="232" r="6"/><circle class="flower-c" cx="46" cy="232" r="2.5"/></g>
+          <g><circle class="flower" cx="258" cy="236" r="6"/><circle class="flower-c" cx="258" cy="236" r="2.5"/></g>
+          <rect id="mkSun" class="mk" x="105" y="140" width="90" height="90"/>
+        </svg>
+        <span class="drop-hint">ปล่อยตรงนี้</span>
+      </div>
+      <div class="zone z-stove" id="zStove" data-zone="stove" role="button" tabindex="0" aria-label="เตาร้อน">
+        <span class="zlabel"><b>เตาร้อน</b><small>ให้ความร้อนมาก</small></span>
+        <svg class="zart" viewBox="0 0 300 300" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <rect x="30" y="228" width="240" height="90" rx="14" class="st-body"/>
+          <rect x="30" y="228" width="240" height="14" rx="7" class="st-top"/>
+          <circle class="st-knob" cx="72" cy="270" r="10"/><circle class="st-knob" cx="228" cy="270" r="10"/>
+          <path class="flame" d="M118 228 C 110 216, 116 204, 122 196 C 124 206, 132 210, 130 220 C 129 225, 126 228, 118 228 Z"/>
+          <path class="flame" d="M146 228 C 136 214, 144 198, 152 188 C 154 200, 164 206, 162 218 C 161 224, 156 228, 146 228 Z"/>
+          <path class="flame" d="M176 228 C 168 216, 174 204, 180 196 C 182 206, 190 210, 188 220 C 187 225, 184 228, 176 228 Z"/>
+          <path class="pan" d="M60 192 Q 64 214 92 216 L 208 216 Q 236 214 240 192 Z"/>
+          <rect class="pan" x="238" y="194" width="52" height="11" rx="5.5"/>
+          <ellipse class="pan-rim" cx="150" cy="192" rx="90" ry="7"/>
+          <rect id="mkStove" class="mk" x="105" y="106" width="90" height="90"/>
+        </svg>
+        <span class="drop-hint">ปล่อยตรงนี้</span>
+      </div>
+
+      <div class="fx" id="fx"></div>
+      <div class="char" id="char" role="button" tabindex="0" aria-label="น้องน้ำแข็ง ลากไปวางที่ต่าง ๆ">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <defs><clipPath id="iceClip"><rect x="12" y="12" width="76" height="76" rx="18"/></clipPath></defs>
+          <g id="chBody">
+            <ellipse id="chPuddle" class="ch-water" cx="50" cy="91" rx="16" ry="5"/>
+            <g id="chIce">
+              <rect class="ch-ice" x="12" y="12" width="76" height="76" rx="18"/>
+              <path class="ch-hl" d="M22 40 Q22 22 40 22"/>
+              <g clip-path="url(#iceClip)"><rect class="ch-sheen" x="20" y="0" width="14" height="110" transform="rotate(20 50 50)"/></g>
+            </g>
+            <g id="chDrop">
+              <path class="ch-water" d="M50 9 C 40 26, 17 42, 17 61 C 17 80, 32 92, 50 92 C 68 92, 83 80, 83 61 C 83 42, 60 26, 50 9 Z"/>
+              <path class="ch-hl" d="M27 58 Q28 44 38 35"/>
+            </g>
+            <g id="chVap">
+              <path class="ch-vap" d="M55 12 C 75 14, 80 34, 66 44 C 82 52, 80 74, 62 80 C 58 92, 40 94, 34 84 C 18 82, 16 62, 30 56 C 20 44, 30 28, 44 30 C 44 20, 48 12, 55 12 Z"/>
+            </g>
+            <g id="chFace">
+              <g id="fComfy">
+                <circle class="face-dot" cx="39" cy="52" r="3.4"/><circle class="face-dot" cx="61" cy="52" r="3.4"/>
+                <ellipse class="ck-pink" cx="30" cy="61" rx="5" ry="3"/><ellipse class="ck-pink" cx="70" cy="61" rx="5" ry="3"/>
+                <path class="face-line" d="M44 62 Q50 68 56 62"/>
+              </g>
+              <g id="fCold">
+                <path class="face-line" d="M34 53 Q39 47 44 53"/><path class="face-line" d="M56 53 Q61 47 66 53"/>
+                <ellipse class="ck-blue" cx="30" cy="61" rx="5" ry="3"/><ellipse class="ck-blue" cx="70" cy="61" rx="5" ry="3"/>
+                <path class="face-line" d="M43 64 q1.75 -3 3.5 0 t3.5 0 t3.5 0 t3.5 0"/>
+              </g>
+              <g id="fHot">
+                <ellipse class="face-dot" cx="39" cy="51" rx="2.6" ry="4.6"/><ellipse class="face-dot" cx="61" cy="51" rx="2.6" ry="4.6"/>
+                <ellipse class="ck-coral" cx="30" cy="61" rx="5" ry="3"/><ellipse class="ck-coral" cx="70" cy="61" rx="5" ry="3"/>
+                <ellipse class="face-dot" cx="50" cy="65" rx="4" ry="5"/>
+                <path class="ch-sweat" d="M79 28 q5 7 0 10 q-5 -3 0 -10 Z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="toast" id="toast1" aria-hidden="true"></div>
+    </div>
+
+    <div class="tray" aria-label="ผลการสังเกต">
+      <span class="pill" id="m1Pill" data-k="solid">ของแข็ง · น้ำแข็ง</span>
+      <span class="temp" aria-label="อุณหภูมิ">
+        <svg viewBox="0 0 22 30" aria-hidden="true"><rect class="th-glass" x="7" y="2" width="8" height="20" rx="4"/><circle class="th-glass" cx="11" cy="24" r="5"/><circle class="th-red" cx="11" cy="24" r="3"/><rect class="th-red" id="thFill" x="9.5" y="12" width="3" height="11"/></svg>
+        <span><span id="m1Temp">−18.0</span> °C</span>
+      </span>
+      <span class="amount">ปริมาณน้ำที่เหลือ <span class="bar"><span id="m1Amt"></span></span></span>
+      <button class="tbtn reset" id="m1Reset" type="button">หยิบน้ำแข็งก้อนใหม่</button>
+      <p class="explain" id="m1Explain"></p>
+    </div>
+    <p class="how">ลากน้องน้ำแข็ง หรือแตะที่ช่องแช่แข็ง กลางแดด หรือเตาร้อน เพื่อย้ายน้องไปที่นั่น</p>
+  </div>
+  <p class="sr" id="live1" aria-live="polite"></p>
+</section>
+
+<!-- ======================= MODE 2 ======================= -->
+<section class="view fixed-view v-holo" id="vHolo" hidden aria-labelledby="m2Title">
+  <header class="topbar">
+    <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
+    <h1 id="m2Title">โฮโลแกรม</h1>
+    <button class="tbtn" id="holoHelp" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5v.01"/></svg><span class="lbl">วิธีทำพีระมิด</span></button>
+    <a class="tbtn" href="#ar"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+  </header>
+  <div class="stage-area" id="holoArea">
+    <canvas id="hcv" aria-label="ภาพอนุภาค 4 ด้านสำหรับพีระมิดใส"></canvas>
+    <div class="pctrl holo-ctrl">
+      <span class="spill" data-pill></span>
+      <p class="smsg" data-msg></p>
+      <div class="pbtns">
+        <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
+        <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
+      </div>
+      <span class="sizer">ขนาดภาพ <button type="button" id="hMinus" aria-label="ย่อภาพ">−</button><button type="button" id="hPlus" aria-label="ขยายภาพ">+</button></span>
+    </div>
+    <p class="holo-tip">คว่ำพีระมิดใสลงตรงกรอบสี่เหลี่ยมกลางจอ ทำห้องให้มืด แล้วมองจากด้านข้าง</p>
+  </div>
+  <div class="sheet" id="helpSheet" hidden>
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <h2 id="helpTitle">ทำพีระมิดโฮโลแกรม</h2>
+      <svg viewBox="0 0 320 222" role="img" aria-label="แบบตัดสี่เหลี่ยมคางหมู ด้านสั้น 2 ซม. ด้านยาว 12 ซม. สูง 7 ซม.">
+        <polygon class="tp-shape" points="40,180 280,180 180,40 140,40"/>
+        <line class="tp-dim" x1="160" y1="40" x2="160" y2="180"/>
+        <text class="tp-text" x="160" y="26" text-anchor="middle">2 ซม. (ด้านนี้แตะจอ)</text>
+        <text class="tp-text" x="160" y="204" text-anchor="middle">12 ซม.</text>
+        <text class="tp-text" x="168" y="116">สูง 7 ซม.</text>
+      </svg>
+      <ol>
+        <li>ตัดแผ่นพลาสติกใสแข็ง (แผ่นใสปกรายงานหรือฝากล่องซีดี) เป็นรูปสี่เหลี่ยมคางหมู 4 ชิ้นตามแบบ ถ้าใช้มือถือ ใช้ขนาด 1, 6 และ 3.5 ซม.</li>
+        <li>ติดเทปใสที่ขอบเฉียง ให้เป็นพีระมิดที่ตัดยอด</li>
+        <li>วาง iPad ราบ แล้วคว่ำพีระมิดให้ด้านสั้นแตะจอตรงกรอบสี่เหลี่ยมกลางจอ</li>
+        <li>ทำห้องให้มืด เปิดความสว่างจอสุด แล้วมองจากด้านข้าง</li>
+      </ol>
+      <p class="note">ภาพที่เห็นเป็นภาพสะท้อนบนแผ่นใส (เทคนิค Pepper’s ghost) ไม่ใช่โฮโลแกรมแท้ แต่ดูเหมือนลอยเป็น 3 มิติ และดูได้รอบ 4 ด้าน</p>
+      <button class="tbtn primary" id="helpClose" type="button">เข้าใจแล้ว</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= MODE 3 ======================= -->
+<section class="view fixed-view v-ar" id="vAr" hidden aria-labelledby="m3Title">
+  <header class="topbar">
+    <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
+    <h1 id="m3Title">AR</h1>
+    <button class="tbtn" id="arBgBtn" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg><span class="lbl">พื้นหลัง</span></button>
+    <a class="tbtn" href="#fridge"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+  </header>
+  <div class="stage-area" id="arArea">
+    <div class="ar-backdrop"></div>
+    <img id="arImg" alt="" hidden>
+    <video id="arVid" playsinline muted autoplay hidden></video>
+    <canvas id="acv" aria-label="แบบจำลองอนุภาคลอยอยู่บนภาพห้องเรียน"></canvas>
+    <p class="ar-hint" id="arHint">ลากเพื่อย้าย · ใช้สองนิ้วถ่างหรือหุบเพื่อย่อขยาย</p>
+    <div class="ar-tools">
+      <button class="tbtn" id="arFlip" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2M20 4v4h-4M4 20v-4h4"/></svg><span class="lbl">สลับกล้อง</span></button>
+      <button class="tbtn" id="arSnap" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg><span class="lbl">เก็บภาพ</span></button>
+    </div>
+    <p class="ar-toast" id="arToast" hidden></p>
+    <div class="ar-start" id="arStart">
+      <h2>วางอนุภาคในห้องของเรา</h2>
+      <p>เปิดกล้องเพื่อให้แบบจำลองอนุภาคลอยอยู่บนโต๊ะจริง หรือถ่ายรูปห้องเรียนมาเป็นพื้นหลังก็ได้</p>
+      <div class="row">
+        <button class="tbtn primary" id="arCam" type="button">เปิดกล้อง</button>
+        <button class="tbtn" id="arShootBtn" type="button">ถ่ายภาพ</button>
+        <button class="tbtn" id="arPickBtn" type="button">เลือกภาพ</button>
+      </div>
+      <p class="msg" id="arMsg" hidden></p>
+      <button class="tbtn" id="arSkip" type="button">ใช้ภาพห้องตัวอย่าง</button>
+    </div>
+    <div class="pctrl ar-ctrl">
+      <span class="spill" data-pill></span>
+      <p class="smsg" data-msg></p>
+      <div class="pbtns">
+        <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
+        <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="arShoot" accept="image/*" capture="environment" hidden>
+  <input type="file" id="arPick" accept="image/*" hidden>
+</section>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rnd = () => Math.random() * 2 - 1;
+  const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const MINUS = '−';
+  const fmt1 = (t) => { const r = Math.round(t * 10) / 10; return (r < 0 ? MINUS : '') + Math.abs(r).toFixed(1); };
+
+  /* ====================== router ====================== */
+  const VIEWS = { home: $('vHome'), fridge: $('vFridge'), holo: $('vHolo'), ar: $('vAr') };
+  let view = 'home';
+  let wakeLock = null;
+  async function keepAwake(on) {
+    try {
+      if (on && !wakeLock && navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen');
+      if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+    } catch (e) { wakeLock = null; }
+  }
+  function go(name) {
+    if (!VIEWS[name]) name = 'home';
+    const prev = view;
+    view = name;
+    for (const [k, el] of Object.entries(VIEWS)) el.hidden = k !== name;
+    document.documentElement.classList.toggle('lock', name === 'holo' || name === 'ar');
+    if (prev === 'ar' && name !== 'ar') stopCamera();
+    keepAwake(name === 'holo' || name === 'ar');
+    if (name === 'fridge') { requestAnimationFrame(() => { layout1(); place1(false); }); }
+    if (name !== 'holo') $('helpSheet').hidden = true;
+    window.scrollTo(0, 0);
+    last = performance.now();
+  }
+  window.addEventListener('hashchange', () => go(location.hash.slice(1)));
+
+  /* ====================== MODE 1: ice character ====================== */
+  const Z1 = { freezer: { T: -18, k: 0.9 }, sun: { T: 35, k: 0.5 }, stove: { T: 150, k: 0.3 } };
+  const LF1 = 40, LV1 = 95;
+  const c1 = { T: -18, s: 1, m: 1, zone: 'freezer', gone: false };
+  const scene = $('scene'), ch = $('char'), fx = $('fx');
+  const zones = { freezer: $('zFreezer'), sun: $('zSun'), stove: $('zStove') };
+  const markers = { freezer: $('mkFreezer'), sun: $('mkSun'), stove: $('mkStove') };
+  const ZNAME = { freezer: 'ช่องแช่แข็ง', sun: 'กลางแดด', stove: 'เตาร้อน' };
+  let chX = 0, chY = 0, chSize = 90, grab = null;
+  let flags = { evap: false, boil: false };
+
+  function heat1(q) {
+    if (c1.s > 0) {
+      if (c1.T < 0) { const need = -c1.T; if (q <= need) { c1.T += q; return; } c1.T = 0; q -= need; }
+      const melt = q / LF1;
+      if (melt <= c1.s) { c1.s -= melt; return; }
+      q -= c1.s * LF1; c1.s = 0;
+    }
+    if (c1.T < 100) { const need = 100 - c1.T; if (q <= need) { c1.T += q; return; } c1.T = 100; q -= need; }
+    c1.m = Math.max(0, c1.m - q / LV1);
+  }
+  function cool1(c) {
+    if (c1.s < 1) {
+      if (c1.T > 0) { if (c <= c1.T) { c1.T -= c; return; } c -= c1.T; c1.T = 0; }
+      const fr = c / LF1;
+      if (fr <= 1 - c1.s) { c1.s += fr; return; }
+      c -= (1 - c1.s) * LF1; c1.s = 1;
+    }
+    c1.T -= c;
+  }
+  function key1() {
+    if (c1.gone) return 'gone';
+    if (c1.s > 0 && c1.s < 1) return Z1[c1.zone].T > 0 ? 'melting' : 'freezing';
+    if (c1.s >= 1) return 'solid';
+    if (c1.zone === 'stove' && c1.T >= 99.9) return 'boiling';
+    if (c1.zone === 'sun' && c1.T > 0.5) return 'evaporating';
+    return 'liquid';
+  }
+  function step1(dt) {
+    if (c1.gone) return;
+    const prevS = c1.s;
+    const env = Z1[c1.zone];
+    const q = env.k * (env.T - c1.T) * dt;
+    if (q > 0) heat1(q); else if (q < 0) cool1(-q);
+    if (c1.s < 1e-4) c1.s = 0;
+    if (c1.s > 1 - 1e-4) c1.s = 1;
+    // water also evaporates slowly from its surface when it is warm (no boiling needed)
+    if (c1.s < 1 && c1.zone !== 'freezer' && c1.T > 0 && c1.T < 99.9) {
+      c1.m = Math.max(0, c1.m - 0.11 * clamp(c1.T / 35, 0, 1.4) * (1 - c1.s) * dt);
+    }
+    if (prevS === 1 && c1.s < 1) { toast1('น้ำแข็งได้รับความร้อนและหลอมเหลวเป็นน้ำ'); sheen(); }
+    if (prevS === 0 && c1.s > 0) { toast1('น้ำสูญเสียความร้อนและแข็งตัวเป็นน้ำแข็ง'); sparkles(); }
+    if (prevS < 1 && c1.s === 1 && c1.zone === 'freezer') sparkles();
+    const k = key1();
+    if (k === 'evaporating' && !flags.evap) { flags.evap = true; toast1('น้ำค่อย ๆ ระเหยจากผิว กลายเป็นไอ'); }
+    if (k === 'boiling' && !flags.boil) { flags.boil = true; toast1('น้ำเดือด เกิดฟองไอ และกลายเป็นไอ'); }
+    if (c1.m < 0.015) {
+      c1.m = 0; c1.gone = true;
+      toast1('น้ำกลายเป็นไอลอยไปในอากาศหมดแล้ว');
+      ch.classList.add('gone');
+      setTimeout(() => { if (c1.gone) ch.classList.add('done'); }, reduceMotion ? 300 : 2400);
+      $('m1Reset').classList.add('primary');
+    }
+  }
+
+  const toastEl = $('toast1'), live1 = $('live1');
+  let toastT = 0;
+  function toast1(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove('show'), 2600);
+    live1.textContent = msg;
+  }
+
+  function layout1() {
+    const r = markers[c1.zone].getBoundingClientRect();
+    if (r.width > 0) chSize = Math.round(clamp(r.width, 56, 150));
+    ch.style.width = chSize + 'px';
+    ch.style.height = chSize + 'px';
+  }
+  function setChPos(x, y) { chX = x; chY = y; ch.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)'; }
+  function place1(animate) {
+    const sr = scene.getBoundingClientRect(), r = markers[c1.zone].getBoundingClientRect();
+    if (!r.width) return;
+    layout1();
+    ch.classList.toggle('snap', !!animate);
+    setChPos(r.left - sr.left + r.width / 2 - chSize / 2, r.bottom - sr.top - chSize * 0.93);
+  }
+  function moveTo(zone) {
+    if (c1.gone || !zones[zone]) { place1(true); return; }
+    const changed = c1.zone !== zone;
+    c1.zone = zone;
+    flags = { evap: false, boil: false };
+    place1(true);
+    if (changed) {
+      live1.textContent = 'ย้ายน้องไปที่' + ZNAME[zone];
+      if (zone === 'freezer' && c1.s > 0) sparkles();
+    }
+  }
+  function zoneAtPoint(x, y) {
+    for (const [k, el] of Object.entries(zones)) {
+      const r = el.getBoundingClientRect();
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return k;
+    }
+    return null;
+  }
+  ch.addEventListener('pointerdown', (e) => {
+    if (c1.gone || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    e.preventDefault();
+    try { ch.setPointerCapture(e.pointerId); } catch (err) {}
+    const sr = scene.getBoundingClientRect();
+    grab = { id: e.pointerId, dx: e.clientX - sr.left - chX, dy: e.clientY - sr.top - chY, sx: e.clientX, sy: e.clientY, moved: false };
+    ch.classList.remove('snap');
+  });
+  ch.addEventListener('pointermove', (e) => {
+    if (!grab || e.pointerId !== grab.id) return;
+    if (!grab.moved && Math.hypot(e.clientX - grab.sx, e.clientY - grab.sy) > 6) {
+      grab.moved = true;
+      scene.classList.add('dragging');
+      ch.classList.add('dragging');
+    }
+    if (!grab.moved) return;
+    const sr = scene.getBoundingClientRect();
+    setChPos(clamp(e.clientX - sr.left - grab.dx, -chSize * 0.2, sr.width - chSize * 0.8), clamp(e.clientY - sr.top - grab.dy, -chSize * 0.2, sr.height - chSize * 0.8));
+    const z = zoneAtPoint(e.clientX, e.clientY);
+    for (const [k, el] of Object.entries(zones)) el.classList.toggle('over', k === z);
+  });
+  function endGrab(e, cancelled) {
+    if (!grab || e.pointerId !== grab.id) return;
+    const moved = grab.moved;
+    grab = null;
+    scene.classList.remove('dragging');
+    ch.classList.remove('dragging');
+    for (const el of Object.values(zones)) el.classList.remove('over');
+    if (cancelled || !moved) { place1(true); return; }
+    const z = zoneAtPoint(e.clientX, e.clientY);
+    if (z) moveTo(z); else place1(true);
+  }
+  ch.addEventListener('pointerup', (e) => endGrab(e, false));
+  ch.addEventListener('pointercancel', (e) => endGrab(e, true));
+  for (const [k, el] of Object.entries(zones)) {
+    el.addEventListener('click', () => moveTo(k));
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); moveTo(k); } });
+  }
+  ch.addEventListener('keydown', (e) => {
+    const order = ['freezer', 'sun', 'stove'];
+    const i = order.indexOf(c1.zone);
+    if (e.key === 'ArrowRight') { e.preventDefault(); moveTo(order[(i + 1) % 3]); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); moveTo(order[(i + 2) % 3]); }
+  });
+  $('m1Reset').addEventListener('click', () => {
+    Object.assign(c1, { T: -18, s: 1, m: 1, zone: 'freezer', gone: false });
+    flags = { evap: false, boil: false };
+    ch.classList.remove('gone', 'done');
+    $('m1Reset').classList.remove('primary');
+    place1(true);
+    ch.classList.remove('pop'); void ch.offsetWidth; ch.classList.add('pop');
+    toast1('ได้น้ำแข็งก้อนใหม่แล้ว อยู่ในช่องแช่แข็ง');
+  });
+  if (window.ResizeObserver) new ResizeObserver(() => { if (view === 'fridge' && !grab) place1(false); }).observe(scene);
+
+  // effects
+  function charCenter() { return { x: chX + chSize / 2, y: chY + chSize * 0.5 }; }
+  function addFx(cls, x, y, html) {
+    if (reduceMotion) return;
+    const el = document.createElement('span');
+    el.className = cls;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    if (html) el.innerHTML = html;
+    el.addEventListener('animationend', () => el.remove());
+    fx.appendChild(el);
+  }
+  const WISP = '<svg viewBox="0 0 22 38"><path d="M11 36 C 3 28, 19 22, 11 14 C 6 9, 12 4, 11 2"/></svg>';
+  const STAR = '<svg viewBox="0 0 16 16"><path d="M8 0 L9.6 6.4 16 8 9.6 9.6 8 16 6.4 9.6 0 8 6.4 6.4 Z"/></svg>';
+  function sparkles() {
+    const c = charCenter();
+    for (let i = 0; i < 7; i++) {
+      const a = (i / 7) * Math.PI * 2;
+      addFx('spark', c.x + Math.cos(a) * chSize * 0.62 - 8, c.y + Math.sin(a) * chSize * 0.55 - 8, STAR);
+    }
+  }
+  function sheen() { if (reduceMotion) return; ch.classList.remove('sheen'); void ch.offsetWidth; ch.classList.add('sheen'); }
+  let fxClock = 0;
+  function fx1(dt) {
+    fxClock += dt;
+    const k = key1();
+    const c = charCenter();
+    const sz = chSize * (0.45 + 0.55 * Math.cbrt(c1.m));
+    const top = chY + chSize * 0.92 - sz * 0.85;
+    if (k === 'evaporating' && fxClock > 0.45) {
+      fxClock = 0;
+      addFx('wisp', c.x - 11 + rnd() * sz * 0.3, top - 30, WISP);
+    } else if (k === 'boiling' && fxClock > 0.16) {
+      fxClock = 0;
+      addFx('wisp', c.x - 11 + rnd() * sz * 0.35, top - 30, WISP);
+      addFx('bub', c.x - 5 + rnd() * sz * 0.45, chY + chSize * 0.85);
+    } else if (k === 'melting' && fxClock > 0.5) {
+      fxClock = 0;
+      addFx('drip', c.x - 4 + (Math.random() < 0.5 ? -1 : 1) * sz * 0.32, chY + chSize * 0.78);
+    } else if (fxClock > 1) fxClock = 0;
+  }
+
+  // drawing the character
+  const chBody = $('chBody'), chIce = $('chIce'), chDrop = $('chDrop'), chVap = $('chVap'), chPuddle = $('chPuddle'), chFace = $('chFace');
+  const faces = { comfy: $('fComfy'), cold: $('fCold'), hot: $('fHot') };
+  let lastMood = '';
+  function render1() {
+    const show = (el, on) => { el.style.display = on ? '' : 'none'; };
+    const partial = !c1.gone && c1.s > 0 && c1.s < 1;
+    show(chIce, !c1.gone && c1.s > 0);
+    show(chDrop, !c1.gone && c1.s === 0);
+    show(chVap, c1.gone);
+    show(chPuddle, partial);
+    if (partial) {
+      const f = 0.5 + 0.5 * c1.s;
+      const t = 'translate(50 88) scale(' + f.toFixed(3) + ') translate(-50 -88)';
+      chIce.setAttribute('transform', t);
+      chFace.setAttribute('transform', t);
+      chPuddle.setAttribute('rx', (14 + 26 * (1 - c1.s)).toFixed(1));
+    } else {
+      chIce.removeAttribute('transform');
+      chFace.removeAttribute('transform');
+    }
+    const sz = c1.gone ? 1 : 0.45 + 0.55 * Math.cbrt(c1.m);
+    chBody.setAttribute('transform', 'translate(50 92) scale(' + sz.toFixed(3) + ') translate(-50 -92)');
+    const mood = c1.gone ? 'comfy' : c1.T < -5 ? 'cold' : c1.T > 28 ? 'hot' : 'comfy';
+    if (mood !== lastMood) {
+      lastMood = mood;
+      for (const [k, el] of Object.entries(faces)) show(el, k === mood);
+    }
+  }
+
+  // tray
+  const PILL1 = {
+    solid: 'ของแข็ง · น้ำแข็ง', melting: 'กำลังหลอมเหลว', liquid: 'ของเหลว · น้ำ', evaporating: 'ของเหลว · กำลังระเหย',
+    boiling: 'กำลังเดือด · กลายเป็นไอ', freezing: 'กำลังแข็งตัว', gone: 'แก๊ส · ไอน้ำ (มองไม่เห็น)'
+  };
+  function explain1() {
+    const k = key1(), z = c1.zone, d = Z1[z].T - c1.T;
+    switch (k) {
+      case 'gone': return 'น้ำกลายเป็นไอน้ำลอยไปในอากาศหมดแล้ว ไอน้ำเป็นแก๊สที่มองไม่เห็น น้ำไม่ได้หายไปไหน กด “หยิบน้ำแข็งก้อนใหม่” เพื่อเล่นอีกครั้ง';
+      case 'melting': return 'น้ำแข็งได้รับความร้อนและหลอมเหลวเป็นน้ำ อุณหภูมิค้างที่ 0 °C จนกว่าจะหลอมเหลวหมด';
+      case 'freezing': return 'น้ำสูญเสียความร้อนและแข็งตัวเป็นน้ำแข็ง อุณหภูมิค้างที่ 0 °C จนกว่าจะแข็งตัวหมด';
+      case 'boiling': return 'น้ำเดือดที่ 100 °C เกิดฟองไอ และกลายเป็นไอ ฟองในน้ำเดือดคือไอน้ำ ไม่ใช่อากาศ';
+      case 'evaporating': return 'แดดทำให้น้ำอุ่นขึ้น น้ำค่อย ๆ ระเหยจากผิว กลายเป็นไอลอยไปในอากาศ น้ำจึงเหลือน้อยลง';
+      case 'solid':
+        if (Math.abs(d) < 0.6) return 'น้องน้ำแข็งเย็นเท่ากับช่องแช่แข็งแล้ว ยังเป็นของแข็ง ลองลากออกไปกลางแดดหรือเตาดูสิ';
+        return d > 0 ? 'น้ำแข็งได้รับความร้อน อุณหภูมิสูงขึ้นจนถึง 0 °C แล้วจะเริ่มหลอมเหลว' : 'น้ำแข็งสูญเสียความร้อน เย็นลงอีก';
+      default:
+        if (d < -0.6) return 'น้ำสูญเสียความร้อน อุณหภูมิลดลงจนถึง 0 °C แล้วจะเริ่มแข็งตัว';
+        if (d > 0.6 && z === 'stove') return 'น้ำได้รับความร้อนจากเตา ร้อนขึ้นเรื่อย ๆ จนเดือดที่ 100 °C';
+        return 'น้ำเป็นของเหลว ลองลากไปกลางแดด เตาร้อน หรือช่องแช่แข็งดู';
+    }
+  }
+  const cache1 = {};
+  function setT(id, v) { if (cache1[id] !== v) { cache1[id] = v; $(id).textContent = v; } }
+  function tray1() {
+    const k = key1();
+    $('m1Pill').dataset.k = k;
+    setT('m1Pill', PILL1[k]);
+    setT('m1Temp', fmt1(c1.T));
+    setT('m1Explain', explain1());
+    $('m1Amt').style.width = (c1.m * 100).toFixed(1) + '%';
+    const h = clamp((c1.T + 20) / 125, 0.05, 1) * 18;
+    const th = $('thFill');
+    th.setAttribute('y', (22 - h).toFixed(1));
+    th.setAttribute('height', (h + 1).toFixed(1));
+  }
+
+  /* ====================== MODES 2 + 3: particle model ====================== */
+  const LEVELS = [-15, 30, 120];
+  const ps = { T: -15, s: 1, g: 0, level: 0 };
+  const PK = 0.6, PLF = 40, PLV = 40;
+  const pliq = () => Math.max(0, 1 - ps.s - ps.g);
+  function pHeat(q) {
+    for (let guard = 0; q > 1e-9 && guard < 6; guard++) {
+      if (ps.s > 0) {
+        if (ps.T < 0) { const n = -ps.T; if (q <= n) { ps.T += q; return; } ps.T = 0; q -= n; }
+        const m = q / PLF; if (m <= ps.s) { ps.s -= m; return; }
+        q -= ps.s * PLF; ps.s = 0; continue;
+      }
+      const l = pliq();
+      if (l > 1e-9) {
+        if (ps.T < 100) { const n = 100 - ps.T; if (q <= n) { ps.T += q; return; } ps.T = 100; q -= n; }
+        const v = q / PLV; if (v <= l) { ps.g += v; return; }
+        q -= l * PLV; ps.g = 1; continue;
+      }
+      ps.T += q; return;
+    }
+  }
+  function pCool(c) {
+    for (let guard = 0; c > 1e-9 && guard < 6; guard++) {
+      if (ps.g > 0) {
+        if (ps.T > 100) { const e = ps.T - 100; if (c <= e) { ps.T -= c; return; } ps.T = 100; c -= e; }
+        const v = c / PLV; if (v <= ps.g) { ps.g -= v; return; }
+        c -= ps.g * PLV; ps.g = 0; continue;
+      }
+      if (ps.s < 1) {
+        if (ps.T > 0) { const e = ps.T; if (c <= e) { ps.T -= c; return; } ps.T = 0; c -= e; }
+        const f = c / PLF; if (f <= 1 - ps.s) { ps.s += f; return; }
+        c -= (1 - ps.s) * PLF; ps.s = 1; continue;
+      }
+      ps.T -= c; return;
+    }
+  }
+  function pStep(dt) {
+    const q = PK * (LEVELS[ps.level] - ps.T) * dt;
+    if (q > 0) pHeat(q); else if (q < 0) pCool(-q);
+    if (ps.s < 1e-4) ps.s = 0;
+    if (ps.s > 1 - 1e-4) ps.s = 1;
+    if (ps.g < 1e-4) ps.g = 0;
+    if (ps.g > 1 - 1e-4) ps.g = 1;
+  }
+  function pKey() {
+    const up = LEVELS[ps.level] > ps.T;
+    if (ps.s > 0 && ps.s < 1) return up ? 'melting' : 'freezing';
+    if (ps.g > 0 && ps.g < 1) return up ? 'boiling' : 'condensing';
+    if (ps.s >= 1) return 'solid';
+    if (ps.g >= 1) return 'gas';
+    return 'liquid';
+  }
+  const PPILL = {
+    solid: 'ของแข็ง · น้ำแข็ง', liquid: 'ของเหลว · น้ำ', gas: 'แก๊ส · ไอน้ำ',
+    melting: 'กำลังหลอมเหลว', freezing: 'กำลังแข็งตัว', boiling: 'กำลังกลายเป็นไอ', condensing: 'กำลังควบแน่น'
+  };
+  const PMSG = {
+    solid: 'อนุภาคอยู่ชิดกัน เรียงเป็นระเบียบ ได้แค่สั่นอยู่กับที่',
+    liquid: 'อนุภาคยังอยู่ชิดกัน แต่เคลื่อนที่ไหลผ่านกันได้',
+    gas: 'อนุภาคอยู่ห่างกันมาก เคลื่อนที่เร็วไปทั่วภาชนะ',
+    melting: 'น้ำแข็งได้รับความร้อนและหลอมเหลวเป็นน้ำ',
+    freezing: 'น้ำสูญเสียความร้อนและแข็งตัวเป็นน้ำแข็ง',
+    boiling: 'น้ำได้รับความร้อนและกลายเป็นไอ',
+    condensing: 'ไอน้ำสูญเสียความร้อนและควบแน่นเป็นน้ำ'
+  };
+  document.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
+    ps.level = clamp(ps.level + (b.dataset.act === 'heat' ? 1 : -1), 0, 2);
+    updatePUI(true);
+  }));
+  let lastPK = '';
+  function updatePUI(force) {
+    const k = pKey();
+    if (k === lastPK && !force) return;
+    lastPK = k;
+    document.querySelectorAll('[data-pill]').forEach((el) => { el.textContent = PPILL[k]; });
+    document.querySelectorAll('[data-msg]').forEach((el) => { el.textContent = PMSG[k]; });
+    document.querySelectorAll('[data-act="heat"]').forEach((b) => { b.disabled = ps.level >= 2; });
+    document.querySelectorAll('[data-act="cool"]').forEach((b) => { b.disabled = ps.level <= 0; });
+  }
+
+  // 27 particles: st 0 solid, 1 liquid, 2 gas
+  const RAD = 0.34, SP = 0.8, FLOOR = -1.6, CEIL = 3.6, HALF = 1.35;
+  const BOX_X = HALF + RAD, BOX_Y0 = FLOOR - RAD, BOX_Y1 = CEIL + RAD, MODEL_CY = (BOX_Y0 + BOX_Y1) / 2;
+  const parts = [], BONDS = [];
+  const idx = (i, j, k) => (i * 3 + j) * 3 + k;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) {
+    const h = [(i - 1) * SP, FLOOR + j * SP, (k - 1) * SP];
+    parts.push({ h, p: h.slice(), v: [0, 0, 0], ph: [Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283], st: 0, rank: 0 });
+    if (i < 2) BONDS.push([idx(i, j, k), idx(i + 1, j, k)]);
+    if (j < 2) BONDS.push([idx(i, j, k), idx(i, j + 1, k)]);
+    if (k < 2) BONDS.push([idx(i, j, k), idx(i, j, k + 1)]);
+  }
+  parts
+    .map((p, i) => [Math.hypot(p.h[0], p.h[1] - (FLOOR + SP), p.h[2]) + Math.random() * 0.08, i])
+    .sort((a, b) => a[0] - b[0])
+    .forEach((pair, r) => { parts[pair[1]].rank = r; });
+  function assignStates() {
+    const n = parts.length;
+    const nS = ps.s >= 1 ? n : ps.s <= 0 ? 0 : clamp(Math.round(ps.s * n), 1, n - 1);
+    const nG = ps.g >= 1 ? n : ps.g <= 0 ? 0 : clamp(Math.round(ps.g * n), 1, n - 1);
+    for (const p of parts) {
+      const want = p.rank < nS;
+      if (want && p.st !== 0) p.st = 0;
+      else if (!want && p.st === 0) { p.st = 1; p.v = [rnd() * 1.2, rnd() * 1.2 + 0.4, rnd() * 1.2]; }
+    }
+    let gas = 0;
+    for (const p of parts) if (p.st === 2) gas++;
+    while (gas < nG) {
+      let best = null;
+      for (const p of parts) if (p.st === 1 && (!best || p.p[1] > best.p[1])) best = p;
+      if (!best) break;
+      const a = Math.random() * 6.283;
+      best.st = 2; best.v = [Math.cos(a) * 1.4, 2.8, Math.sin(a) * 1.4]; gas++;
+    }
+    while (gas > nG) {
+      let best = null;
+      for (const p of parts) if (p.st === 2 && (!best || p.p[1] < best.p[1])) best = p;
+      if (!best) break;
+      best.st = 1; best.v = best.v.map((x) => x * 0.25); gas--;
+    }
+  }
+  let pt = 0;
+  function stepParticles(dt) {
+    pt += dt;
+    assignStates();
+    const T = ps.T;
+    const amp = 0.03 + 0.07 * clamp((T + 20) / 20, 0, 1);
+    const kick = 8 * (1 + 1.3 * clamp(T / 100, 0, 1));
+    const vg = 2.6 + 1.6 * clamp((T - 100) / 30, 0, 1);
+    const a = Math.min(1, dt * 9);
+    const damp = Math.max(0, 1 - 1.6 * dt);
+    for (const p of parts) {
+      if (p.st === 0) {
+        p.p[0] += (p.h[0] + amp * Math.sin(pt * 13 + p.ph[0]) - p.p[0]) * a;
+        p.p[1] += (p.h[1] + amp * Math.sin(pt * 11 + p.ph[1]) - p.p[1]) * a;
+        p.p[2] += (p.h[2] + amp * Math.sin(pt * 12 + p.ph[2]) - p.p[2]) * a;
+        continue;
+      }
+      if (p.st === 1) {
+        p.v[0] = (p.v[0] + rnd() * kick * dt) * damp;
+        p.v[1] = (p.v[1] + rnd() * kick * dt - 3.4 * dt) * damp;
+        p.v[2] = (p.v[2] + rnd() * kick * dt) * damp;
+      } else {
+        p.v[0] += rnd() * 5 * dt; p.v[1] += rnd() * 5 * dt - 0.3 * dt; p.v[2] += rnd() * 5 * dt;
+        const sp = Math.hypot(p.v[0], p.v[1], p.v[2]) || 1;
+        const f = 1 + (vg / sp - 1) * Math.min(1, dt * 3);
+        p.v[0] *= f; p.v[1] *= f; p.v[2] *= f;
+      }
+      for (let c = 0; c < 3; c++) p.p[c] += p.v[c] * dt;
+      const bounce = p.st === 2 ? 1 : 0.5;
+      for (const c of [0, 2]) {
+        if (p.p[c] < -HALF) { p.p[c] = -HALF; p.v[c] = Math.abs(p.v[c]) * bounce; }
+        if (p.p[c] > HALF) { p.p[c] = HALF; p.v[c] = -Math.abs(p.v[c]) * bounce; }
+      }
+      if (p.p[1] < FLOOR) { p.p[1] = FLOOR; p.v[1] = Math.abs(p.v[1]) * (p.st === 2 ? 1 : 0.4); }
+      if (p.p[1] > CEIL) { p.p[1] = CEIL; p.v[1] = -Math.abs(p.v[1]) * (p.st === 2 ? 1 : 0.4); }
+    }
+    const D0 = SP * 0.92, D02 = D0 * D0, n = parts.length;
+    for (let it = 0; it < 2; it++) {
+      for (let i = 0; i < n; i++) {
+        const A = parts[i];
+        for (let j = i + 1; j < n; j++) {
+          const B = parts[j];
+          if (A.st === 0 && B.st === 0) continue;
+          const dx = B.p[0] - A.p[0], dy = B.p[1] - A.p[1], dz = B.p[2] - A.p[2];
+          const d2 = dx * dx + dy * dy + dz * dz;
+          if (d2 >= D02 || d2 < 1e-9) continue;
+          const d = Math.sqrt(d2), o = (D0 - d) / d;
+          if (A.st === 0) { B.p[0] += dx * o; B.p[1] += dy * o; B.p[2] += dz * o; }
+          else if (B.st === 0) { A.p[0] -= dx * o; A.p[1] -= dy * o; A.p[2] -= dz * o; }
+          else {
+            const h = o * 0.5;
+            A.p[0] -= dx * h; A.p[1] -= dy * h; A.p[2] -= dz * h;
+            B.p[0] += dx * h; B.p[1] += dy * h; B.p[2] += dz * h;
+          }
+        }
+      }
+    }
+  }
+
+  // sprites
+  function makeSprite(stops, offset) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 96;
+    const g = c.getContext('2d');
+    const gr = g.createRadialGradient(48 - offset, 48 - offset, 0, 48, 48, 48);
+    stops.forEach(([o, col]) => gr.addColorStop(o, col));
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 96, 96);
+    return c;
+  }
+  const GLOW = makeSprite([[0, 'rgba(255,255,255,1)'], [0.18, 'rgba(225,252,255,0.95)'], [0.38, 'rgba(79,228,244,0.9)'], [0.5, 'rgba(79,228,244,0.45)'], [0.64, 'rgba(79,228,244,0.12)'], [1, 'rgba(79,228,244,0)']], 8);
+  const BALL = makeSprite([[0, '#FFFFFF'], [0.16, '#D8F6FF'], [0.42, '#5CCFF5'], [0.7, '#1E7FC4'], [0.86, '#0F4C86'], [0.9, 'rgba(15,76,134,0.6)'], [0.97, 'rgba(15,76,134,0)'], [1, 'rgba(15,76,134,0)']], 14);
+  const cyanA = (a) => 'rgba(79,228,244,' + a + ')';
+  const whiteA = (a) => 'rgba(255,255,255,' + a + ')';
+
+  function drawParticles(ctx, cx, cy, unit, azi, ele, style) {
+    const glow = style === 'glow';
+    const ca = Math.cos(azi), sa = Math.sin(azi), ce = Math.cos(ele), se = Math.sin(ele), D = 13;
+    const P = (x, y, z) => {
+      y -= MODEL_CY;
+      const x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
+      const y2 = y * ce + z1 * se, z2 = -y * se + z1 * ce;
+      const k = D / (D + z2);
+      return [cx + x1 * k * unit, cy - y2 * k * unit, z2, k];
+    };
+    const fc = P(0, BOX_Y0, 0);
+    const rx = unit * 2.4, ry = Math.max(unit * 0.3, rx * Math.abs(se));
+    ctx.save();
+    ctx.translate(fc[0], fc[1]);
+    ctx.scale(1, ry / rx);
+    const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+    if (glow) { fg.addColorStop(0, cyanA(0.26)); fg.addColorStop(1, cyanA(0)); }
+    else { fg.addColorStop(0, 'rgba(10,20,40,0.42)'); fg.addColorStop(1, 'rgba(10,20,40,0)'); }
+    ctx.fillStyle = fg;
+    ctx.beginPath(); ctx.arc(0, 0, rx, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    if (!glow) { ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 4; }
+    ctx.strokeStyle = glow ? cyanA(0.3) : whiteA(0.7);
+    ctx.lineWidth = glow ? 1 : 1.6;
+    const cs = [[-BOX_X, -BOX_X], [BOX_X, -BOX_X], [BOX_X, BOX_X], [-BOX_X, BOX_X]];
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+      const nx = cs[(i + 1) % 4];
+      const a0 = P(cs[i][0], BOX_Y0, cs[i][1]), b0 = P(nx[0], BOX_Y0, nx[1]);
+      const a1 = P(cs[i][0], BOX_Y1, cs[i][1]), b1 = P(nx[0], BOX_Y1, nx[1]);
+      ctx.moveTo(a0[0], a0[1]); ctx.lineTo(b0[0], b0[1]);
+      ctx.moveTo(a0[0], a0[1]); ctx.lineTo(a1[0], a1[1]);
+      ctx.moveTo(a1[0], a1[1]); ctx.lineTo(b1[0], b1[1]);
+    }
+    ctx.stroke();
+    const pr = parts.map((p) => P(p.p[0], p.p[1], p.p[2]));
+    ctx.strokeStyle = glow ? cyanA(0.42) : whiteA(0.85);
+    ctx.lineWidth = Math.max(1, unit * (glow ? 0.045 : 0.06));
+    ctx.beginPath();
+    for (const b of BONDS) {
+      if (parts[b[0]].st === 0 && parts[b[1]].st === 0) { ctx.moveTo(pr[b[0]][0], pr[b[0]][1]); ctx.lineTo(pr[b[1]][0], pr[b[1]][1]); }
+    }
+    ctx.stroke();
+    ctx.lineCap = 'round';
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      if (p.st !== 2) continue;
+      const q = pr[i];
+      const t = P(p.p[0] - p.v[0] * 0.09, p.p[1] - p.v[1] * 0.09, p.p[2] - p.v[2] * 0.09);
+      ctx.strokeStyle = glow ? cyanA(0.28) : whiteA(0.6);
+      ctx.lineWidth = Math.max(1, RAD * q[3] * unit * 0.7);
+      ctx.beginPath(); ctx.moveTo(t[0], t[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+    }
+    ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+    if (glow) {
+      ctx.globalCompositeOperation = 'lighter';
+      for (const q of pr) {
+        const size = RAD * q[3] * unit * 4;
+        ctx.globalAlpha = clamp(0.32 + (q[3] - 0.85) * 1.6, 0.32, 0.88);
+        ctx.drawImage(GLOW, q[0] - size / 2, q[1] - size / 2, size, size);
+      }
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+    } else {
+      const order = pr.map((q, i) => i).sort((a, b) => pr[b][2] - pr[a][2]);
+      for (const i of order) {
+        const q = pr[i];
+        const size = RAD * q[3] * unit * 2.25;
+        ctx.drawImage(BALL, q[0] - size / 2, q[1] - size / 2, size, size);
+      }
+    }
+  }
+  function fitCanvas(cv) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = cv.clientWidth, h = cv.clientHeight;
+    const W = Math.max(1, Math.round(w * dpr)), H = Math.max(1, Math.round(h * dpr));
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    return { w, h, dpr };
+  }
+  let az = 0.6, lastRot = -1e9;
+  const el = 0.3;
+
+  /* ---------- hologram ---------- */
+  const hcv = $('hcv');
+  const off = document.createElement('canvas');
+  let holoScale = 1;
+  const HVIEWS = [
+    { dx: 0, dy: 1, m: [1, 0, 0, -1], az: 0 },
+    { dx: 1, dy: 0, m: [0, -1, -1, 0], az: Math.PI / 2 },
+    { dx: 0, dy: -1, m: [-1, 0, 0, 1], az: Math.PI },
+    { dx: -1, dy: 0, m: [0, 1, 1, 0], az: -Math.PI / 2 }
+  ];
+  (() => {
+    let drag = null;
+    hcv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, id: e.pointerId }; try { hcv.setPointerCapture(e.pointerId); } catch (err) {} lastRot = performance.now(); });
+    hcv.addEventListener('pointermove', (e) => { if (!drag || e.pointerId !== drag.id) return; az += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; lastRot = performance.now(); });
+    const end = () => { drag = null; lastRot = performance.now(); };
+    hcv.addEventListener('pointerup', end);
+    hcv.addEventListener('pointercancel', end);
+  })();
+  function drawHolo() {
+    const { w, h, dpr } = fitCanvas(hcv);
+    if (!w || !h) return;
+    const ctx = hcv.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, hcv.width, hcv.height);
+    const S = Math.min(w, h), R = (S / 2) * holoScale;
+    const inner = 0.12 * R, outer = Math.min(0.8 * R, (S / 2) * 0.98);
+    const v = outer - inner, c = (inner + outer) / 2;
+    const vp = Math.max(1, Math.round(v * dpr));
+    if (off.width !== vp) { off.width = vp; off.height = vp; }
+    const o = off.getContext('2d');
+    const cx = w / 2, cy = h / 2;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cx - inner, cy - inner, inner * 2, inner * 2);
+    const label = PPILL[pKey()];
+    for (const V of HVIEWS) {
+      o.setTransform(dpr, 0, 0, dpr, 0, 0);
+      o.clearRect(0, 0, v, v);
+      drawParticles(o, v / 2, v / 2 - v * 0.05, v / 8.6, az + V.az, el, 'glow');
+      o.fillStyle = '#BFF6FC';
+      o.textAlign = 'center';
+      o.textBaseline = 'alphabetic';
+      o.font = '600 ' + Math.max(10, Math.round(v * 0.066)) + 'px Mitr, "Noto Sans Thai", sans-serif';
+      o.fillText(label, v / 2, v * 0.97);
+      const m = V.m;
+      ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * (cx + V.dx * c), dpr * (cy + V.dy * c));
+      ctx.drawImage(off, -v / 2, -v / 2, v, v);
+    }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  $('hMinus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale - 0.1) * 10) / 10, 0.6, 1.3); });
+  $('hPlus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale + 0.1) * 10) / 10, 0.6, 1.3); });
+  $('holoHelp').addEventListener('click', () => { $('helpSheet').hidden = false; $('helpClose').focus(); });
+  $('helpClose').addEventListener('click', () => { $('helpSheet').hidden = true; $('holoHelp').focus(); });
+  $('helpSheet').addEventListener('click', (e) => { if (e.target === $('helpSheet')) $('helpSheet').hidden = true; });
+
+  /* ---------- AR ---------- */
+  const acv = $('acv'), arVid = $('arVid'), arImg = $('arImg');
+  let stream = null, arFx = 0.5, arFy = 0.46, arScale = 1, arUrl = null;
+  const pointers = new Map();
+  let pinch = null, dragAR = null;
+  acv.addEventListener('pointerdown', (e) => {
+    try { acv.setPointerCapture(e.pointerId); } catch (err) {}
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    lastRot = performance.now();
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: arScale };
+      dragAR = null;
+    } else if (pointers.size === 1) {
+      dragAR = { x: e.clientX, y: e.clientY };
+    }
+  });
+  acv.addEventListener('pointermove', (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const r = acv.getBoundingClientRect();
+    if (pinch && pointers.size >= 2) {
+      const [a, b] = [...pointers.values()];
+      arScale = clamp(pinch.s * (Math.hypot(a.x - b.x, a.y - b.y) / pinch.d), 0.4, 2.6);
+    } else if (dragAR) {
+      arFx = clamp(arFx + (e.clientX - dragAR.x) / r.width, 0.05, 0.95);
+      arFy = clamp(arFy + (e.clientY - dragAR.y) / r.height, 0.12, 0.9);
+      dragAR = { x: e.clientX, y: e.clientY };
+    }
+    lastRot = performance.now();
+  });
+  function endAR(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = null;
+    if (pointers.size === 1) { const p = [...pointers.values()][0]; dragAR = { x: p.x, y: p.y }; } else dragAR = null;
+  }
+  acv.addEventListener('pointerup', endAR);
+  acv.addEventListener('pointercancel', endAR);
+  acv.addEventListener('wheel', (e) => { e.preventDefault(); arScale = clamp(arScale * Math.exp(-e.deltaY * 0.0015), 0.4, 2.6); }, { passive: false });
+  function drawAR() {
+    const { w, h, dpr } = fitCanvas(acv);
+    if (!w || !h) return;
+    const ctx = acv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    drawParticles(ctx, w * arFx, h * arFy, Math.min(w, h) / 8.2 * arScale, az, el, 'ball');
+  }
+  function showArMsg(t) { const m = $('arMsg'); m.textContent = t; m.hidden = !t; }
+  function setBackground(kind) {
+    arVid.hidden = kind !== 'camera';
+    arImg.hidden = kind !== 'photo';
+    $('arStart').hidden = true;
+  }
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+    arVid.srcObject = null;
+    arVid.hidden = true;
+    $('arFlip').hidden = true;
+  }
+  let facing = 'environment';
+  const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  async function startCamera() {
+    showArMsg('');
+    if (!window.isSecureContext) { showArMsg('กล้องสดต้องเปิดหน้านี้ผ่านลิงก์ที่ขึ้นต้นด้วย https'); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showArMsg('เบราว์เซอร์นี้เปิดกล้องไม่ได้ ลองใช้ Safari หรือ Chrome รุ่นใหม่ หรือกด “ถ่ายภาพ” แทน'); return; }
+    try {
+      stopCamera();
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+      arVid.srcObject = stream;
+      arVid.classList.toggle('mirror', facing === 'user');
+      try { await arVid.play(); } catch (err) {}
+      setBackground('camera');
+      $('arFlip').hidden = false;
+    } catch (err) {
+      stopCamera();
+      const n = err && err.name;
+      let msg = 'เปิดกล้องไม่ได้ ลองกด “ถ่ายภาพ” แทน';
+      if (n === 'NotAllowedError' || n === 'SecurityError') {
+        msg = inFrame
+          ? 'หน้านี้เปิดอยู่ในกรอบของเว็บอื่น จึงใช้กล้องสดไม่ได้ ให้เปิดจากลิงก์เว็บไซต์ของห้องทดลองโดยตรง หรือกด “ถ่ายภาพ” แทน'
+          : 'ยังไม่ได้อนุญาตให้ใช้กล้อง บน iPad ไปที่ การตั้งค่า › Safari › กล้อง แล้วเลือก “อนุญาต” จากนั้นกดเปิดกล้องอีกครั้ง';
+      } else if (n === 'NotFoundError' || n === 'OverconstrainedError') {
+        msg = 'ไม่พบกล้องที่ใช้ได้ในเครื่องนี้ ลองกด “เลือกภาพ” แทน';
+      } else if (n === 'NotReadableError') {
+        msg = 'กล้องกำลังถูกแอปอื่นใช้อยู่ ปิดแอปนั้นก่อนแล้วลองใหม่';
+      }
+      showArMsg(msg);
+      $('arStart').hidden = false;
+    }
+  }
+  $('arCam').addEventListener('click', startCamera);
+  $('arFlip').addEventListener('click', () => { facing = facing === 'environment' ? 'user' : 'environment'; startCamera(); });
+  let arToastT = 0;
+  function arToast(t) {
+    const el = $('arToast');
+    el.textContent = t;
+    el.hidden = false;
+    clearTimeout(arToastT);
+    arToastT = setTimeout(() => { el.hidden = true; }, 2600);
+  }
+  async function snapshot() {
+    fitCanvas(acv);
+    const W = acv.width, H = acv.height;
+    if (!W || !H) return;
+    const out = document.createElement('canvas');
+    out.width = W; out.height = H;
+    const g = out.getContext('2d');
+    const cover = (src, sw0, sh0, mirror) => {
+      const s = Math.max(W / sw0, H / sh0), sw = W / s, sh = H / s;
+      g.save();
+      if (mirror) { g.translate(W, 0); g.scale(-1, 1); }
+      g.drawImage(src, (sw0 - sw) / 2, (sh0 - sh) / 2, sw, sh, 0, 0, W, H);
+      g.restore();
+    };
+    if (!arVid.hidden && arVid.videoWidth) cover(arVid, arVid.videoWidth, arVid.videoHeight, arVid.classList.contains('mirror'));
+    else if (!arImg.hidden && arImg.naturalWidth) cover(arImg, arImg.naturalWidth, arImg.naturalHeight, false);
+    else {
+      const gr = g.createLinearGradient(0, 0, 0, H);
+      gr.addColorStop(0, '#BFE3FF'); gr.addColorStop(0.58, '#E8F4FF'); gr.addColorStop(0.585, '#C9A27A'); gr.addColorStop(1, '#A9825C');
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    }
+    g.drawImage(acv, 0, 0);
+    const fs = Math.round(Math.min(W, H) * 0.045);
+    g.font = '600 ' + fs + 'px Mitr, "Noto Sans Thai", sans-serif';
+    const text = PPILL[pKey()] + '  ' + fmt1(ps.T) + ' °C';
+    const tw = g.measureText(text).width;
+    g.fillStyle = 'rgba(20,38,64,0.82)';
+    g.fillRect(fs * 0.6, H - fs * 2.4, tw + fs * 1.2, fs * 1.7);
+    g.fillStyle = '#FFFFFF';
+    g.textBaseline = 'middle';
+    g.fillText(text, fs * 1.2, H - fs * 1.55);
+    const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+    if (!blob) { arToast('เก็บภาพไม่ได้'); return; }
+    const name = 'particles-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.png';
+    let file = null;
+    try { file = new File([blob], name, { type: 'image/png' }); } catch (e) { file = null; }
+    try {
+      if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'ภาพอนุภาค' });
+        return;
+      }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    arToast(inFrame ? 'ถ้าภาพไม่ถูกบันทึก ให้เปิดจากลิงก์เว็บไซต์โดยตรง' : 'บันทึกภาพแล้ว');
+  }
+  $('arSnap').addEventListener('click', snapshot);
+  function useFile(input) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    stopCamera();
+    if (arUrl) URL.revokeObjectURL(arUrl);
+    arUrl = URL.createObjectURL(f);
+    arImg.src = arUrl;
+    setBackground('photo');
+    input.value = '';
+  }
+  $('arShootBtn').addEventListener('click', () => $('arShoot').click());
+  $('arPickBtn').addEventListener('click', () => $('arPick').click());
+  $('arShoot').addEventListener('change', () => useFile($('arShoot')));
+  $('arPick').addEventListener('change', () => useFile($('arPick')));
+  $('arSkip').addEventListener('click', () => { stopCamera(); setBackground('none'); });
+  $('arBgBtn').addEventListener('click', () => { $('arStart').hidden = false; showArMsg(''); });
+
+  /* ====================== main loop ====================== */
+  let last = performance.now(), uiT = 1;
+  function frame(now) {
+    const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+    last = now;
+    if (view === 'fridge') {
+      let t = dt;
+      while (t > 1e-6) { const h = Math.min(t, 0.05); step1(h); t -= h; }
+      render1();
+      fx1(dt);
+      uiT += dt;
+      if (uiT > 0.1) { uiT = 0; tray1(); }
+    } else if (view === 'holo' || view === 'ar') {
+      pStep(dt);
+      stepParticles(dt);
+      if (!reduceMotion && now - lastRot > 2500) az += dt * 0.35;
+      updatePUI(false);
+      if (view === 'holo') drawHolo(); else drawAR();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  render1();
+  tray1();
+  updatePUI(true);
+  go(location.hash.slice(1) || 'home');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (view === 'fridge') place1(false); });
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
