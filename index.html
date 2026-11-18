@@ -558,6 +558,114 @@ button, a { font: inherit; color: inherit; }
   white-space: nowrap;
 }
 #arVid.mirror { transform: scaleX(-1); }
+
+/* zoom card: links the real thing to its particles */
+.zoom {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 2px solid #142640;
+  background: #FFFFFF;
+  color: #142640;
+  max-width: 340px;
+}
+.zoom-art { width: 128px; height: 48px; display: block; }
+.zoom-txt { margin: 0; display: grid; line-height: 1.25; }
+.zoom-txt b { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+.zoom-txt small { font-size: 13px; color: #465C76; }
+.zi, .zp { display: none; }
+.zoom[data-state="solid"] .zi-solid, .zoom[data-state="solid"] .zp-solid,
+.zoom[data-state="liquid"] .zi-liquid, .zoom[data-state="liquid"] .zp-liquid,
+.zoom[data-state="gas"] .zi-gas, .zoom[data-state="gas"] .zp-gas { display: inline; }
+.zi-ice { fill: #9BDFFF; stroke: #142640; stroke-width: 2.5; }
+.zi-water { fill: #43C1EE; stroke: #142640; stroke-width: 2.5; }
+.zi-vap { fill: #DCEEFF; stroke: #142640; stroke-width: 2.5; stroke-dasharray: 4 3; }
+.zi-eye { fill: #142640; }
+.zi-mouth { fill: none; stroke: #142640; stroke-width: 2; stroke-linecap: round; }
+.zi-lens { fill: rgba(255, 255, 255, 0.6); stroke: #142640; stroke-width: 3; }
+.zi-handle, .zi-arrow { fill: none; stroke: #142640; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.zp-box { fill: none; stroke: #465C76; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.zp circle { fill: #43C1EE; stroke: #142640; stroke-width: 1.2; }
+.v-holo .zoom { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; max-width: 210px; background: rgba(79, 228, 244, 0.07); border-color: rgba(79, 228, 244, 0.45); color: #E6F7FF; }
+.v-holo .zoom-txt small { color: #9FB7C9; }
+.v-holo .zi-lens { fill: rgba(79, 228, 244, 0.1); stroke: #BFF6FC; }
+.v-holo .zi-handle, .v-holo .zi-arrow { stroke: #BFF6FC; }
+.v-holo .zp-box { stroke: #7FB9C4; }
+.v-holo .zp circle { fill: #4FE4F4; stroke: none; }
+@media (orientation: portrait) { .v-holo .zoom { display: none; } }
+.ar-zoom { position: absolute; z-index: 4; top: calc(66px + env(safe-area-inset-top, 0px)); left: max(12px, env(safe-area-inset-left, 0px)); max-width: min(340px, calc(100% - 96px)); }
+@media (max-width: 480px) { .ar-zoom .zoom-art { width: 96px; height: 36px; } .ar-zoom .zoom-txt small { font-size: 12px; } }
+.ar-hint { top: calc(150px + env(safe-area-inset-top, 0px)); }
+
+/* prediction + checklist */
+.sres { margin: 0; max-width: 300px; padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 15px; line-height: 1.4; text-align: center; }
+.sres.good { background: #DDF5E8; color: #08704F; }
+.sres.miss { background: #FFE7D6; color: #9A3412; }
+.pextra { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+.minibtn {
+  min-height: 40px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(16, 27, 45, 0.55);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ptoggle { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 10px; border-radius: 12px; background: rgba(16, 27, 45, 0.55); color: #FFFFFF; font-weight: 700; font-size: 15px; cursor: pointer; }
+.ptoggle input { width: 20px; height: 20px; accent-color: #FFAD82; }
+.q-kicker { margin: 0; font-weight: 700; font-size: 14px; color: var(--muted); }
+.qsheet-title, #qTitle { margin: 4px 0 0; }
+.q-opts { display: grid; gap: 8px; margin: 12px 0; }
+.q-opt {
+  min-height: 52px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 3px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 17px;
+  text-align: left;
+  cursor: pointer;
+}
+.q-opt:hover { border-color: var(--accent); }
+.check-card {
+  position: absolute;
+  z-index: 7;
+  left: max(12px, env(safe-area-inset-left, 0px));
+  top: calc(66px + env(safe-area-inset-top, 0px));
+  width: min(340px, calc(100% - 24px));
+  max-height: calc(100% - 90px);
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 3px solid #142640;
+  box-shadow: 0 6px 0 #142640;
+  background: #FFFFFF;
+  color: #142640;
+}
+.ck-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ck-head h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+.ck-x { width: 40px; height: 40px; border-radius: 12px; border: 2px solid #9DB6CF; background: #FFFFFF; color: #142640; font-size: 22px; cursor: pointer; }
+.ck-state { margin: 0; font-weight: 700; color: #0058AF; }
+.ck-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; align-items: center; }
+.ck-q { grid-column: 1 / -1; font-weight: 700; font-size: 15px; }
+.ck-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.ck-opts button { min-height: 38px; padding: 4px 10px; border-radius: 10px; border: 2px solid #9DB6CF; background: #FFFFFF; color: #142640; font-weight: 700; font-size: 14px; cursor: pointer; }
+.ck-opts button[aria-pressed="true"] { background: #142640; border-color: #142640; color: #FFFFFF; }
+.ck-mark { min-width: 26px; text-align: center; font-weight: 700; font-size: 20px; }
+.ck-mark.ok { color: #08704F; }
+.ck-mark.no { color: #B42318; }
+.ck-foot { display: grid; gap: 6px; justify-items: start; }
+.ck-res { margin: 0; font-weight: 700; }
+.ck-res.good { color: #08704F; }
 .ar-tools {
   position: absolute;
   z-index: 4;
@@ -804,13 +912,32 @@ button, a { font: inherit; color: inherit; }
   <div class="stage-area" id="holoArea">
     <canvas id="hcv" aria-label="ภาพอนุภาค 4 ด้านสำหรับพีระมิดใส"></canvas>
     <div class="pctrl holo-ctrl">
+      <div class="zoom" data-zoom data-state="solid">
+        <svg class="zoom-art" viewBox="0 0 160 60" aria-hidden="true">
+          <g class="zi zi-solid"><rect class="zi-ice" x="6" y="10" width="40" height="40" rx="10"/><circle class="zi-eye" cx="20" cy="30" r="2.4"/><circle class="zi-eye" cx="32" cy="30" r="2.4"/><path class="zi-mouth" d="M22 37 Q26 40 30 37"/></g>
+          <g class="zi zi-liquid"><path class="zi-water" d="M26 6 C 20 16, 8 24, 8 36 C 8 46, 16 53, 26 53 C 36 53, 44 46, 44 36 C 44 24, 32 16, 26 6 Z"/><circle class="zi-eye" cx="20" cy="35" r="2.4"/><circle class="zi-eye" cx="32" cy="35" r="2.4"/><path class="zi-mouth" d="M22 42 Q26 45 30 42"/></g>
+          <g class="zi zi-gas"><path class="zi-vap" d="M30 8 C 42 9, 45 20, 37 26 C 46 30, 45 43, 35 46 C 33 53, 22 54, 19 48 C 10 47, 9 35, 17 32 C 11 25, 17 16, 25 17 C 25 11, 27 7, 30 8 Z"/><circle class="zi-eye" cx="22" cy="30" r="2.4"/><circle class="zi-eye" cx="33" cy="30" r="2.4"/></g>
+          <circle class="zi-lens" cx="70" cy="26" r="11"/><path class="zi-handle" d="M78 34 L86 42"/>
+          <path class="zi-arrow" d="M92 30 h10 M98 25 l5 5 -5 5"/>
+          <rect class="zp-box" x="110" y="4" width="46" height="52" rx="4"/>
+          <g class="zp zp-solid"><circle cx="122" cy="34" r="4"/><circle cx="133" cy="34" r="4"/><circle cx="144" cy="34" r="4"/><circle cx="122" cy="43" r="4"/><circle cx="133" cy="43" r="4"/><circle cx="144" cy="43" r="4"/><circle cx="122" cy="25" r="4"/><circle cx="133" cy="25" r="4"/><circle cx="144" cy="25" r="4"/></g>
+          <g class="zp zp-liquid"><circle cx="117" cy="49" r="4"/><circle cx="127" cy="50" r="4"/><circle cx="137" cy="48" r="4"/><circle cx="148" cy="50" r="4"/><circle cx="121" cy="41" r="4"/><circle cx="131" cy="41" r="4"/><circle cx="142" cy="42" r="4"/><circle cx="126" cy="33" r="4"/><circle cx="138" cy="34" r="4"/></g>
+          <g class="zp zp-gas"><circle cx="118" cy="13" r="4"/><circle cx="146" cy="11" r="4"/><circle cx="132" cy="27" r="4"/><circle cx="117" cy="46" r="4"/><circle cx="149" cy="40" r="4"/><circle cx="134" cy="50" r="4"/></g>
+        </svg>
+        <p class="zoom-txt"><b>ซูมเข้าไปในน้ำ</b><small>ขยายใหญ่มาก ของจริงมองไม่เห็น · อนุภาคมีขนาดเท่าเดิม</small></p>
+      </div>
       <span class="spill" data-pill></span>
       <p class="smsg" data-msg></p>
+      <p class="sres" data-result hidden></p>
       <div class="pbtns">
         <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
         <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
       </div>
       <span class="sizer">ขนาดภาพ <button type="button" id="hMinus" aria-label="ย่อภาพ">−</button><button type="button" id="hPlus" aria-label="ขยายภาพ">+</button></span>
+      <div class="pextra">
+        <button class="minibtn" type="button" data-check>เช็กลิสต์ 3 ข้อ</button>
+        <label class="ptoggle"><input type="checkbox" data-predict checked> ทายก่อนกด</label>
+      </div>
     </div>
     <p class="holo-tip">คว่ำพีระมิดใสลงตรงกรอบสี่เหลี่ยมกลางจอ ทำห้องให้มืด แล้วมองจากด้านข้าง</p>
   </div>
@@ -849,6 +976,20 @@ button, a { font: inherit; color: inherit; }
     <img id="arImg" alt="" hidden>
     <video id="arVid" playsinline muted autoplay hidden></video>
     <canvas id="acv" aria-label="แบบจำลองอนุภาคลอยอยู่บนภาพห้องเรียน"></canvas>
+    <div class="zoom ar-zoom" data-zoom data-state="solid">
+      <svg class="zoom-art" viewBox="0 0 160 60" aria-hidden="true">
+        <g class="zi zi-solid"><rect class="zi-ice" x="6" y="10" width="40" height="40" rx="10"/><circle class="zi-eye" cx="20" cy="30" r="2.4"/><circle class="zi-eye" cx="32" cy="30" r="2.4"/><path class="zi-mouth" d="M22 37 Q26 40 30 37"/></g>
+        <g class="zi zi-liquid"><path class="zi-water" d="M26 6 C 20 16, 8 24, 8 36 C 8 46, 16 53, 26 53 C 36 53, 44 46, 44 36 C 44 24, 32 16, 26 6 Z"/><circle class="zi-eye" cx="20" cy="35" r="2.4"/><circle class="zi-eye" cx="32" cy="35" r="2.4"/><path class="zi-mouth" d="M22 42 Q26 45 30 42"/></g>
+        <g class="zi zi-gas"><path class="zi-vap" d="M30 8 C 42 9, 45 20, 37 26 C 46 30, 45 43, 35 46 C 33 53, 22 54, 19 48 C 10 47, 9 35, 17 32 C 11 25, 17 16, 25 17 C 25 11, 27 7, 30 8 Z"/><circle class="zi-eye" cx="22" cy="30" r="2.4"/><circle class="zi-eye" cx="33" cy="30" r="2.4"/></g>
+        <circle class="zi-lens" cx="70" cy="26" r="11"/><path class="zi-handle" d="M78 34 L86 42"/>
+        <path class="zi-arrow" d="M92 30 h10 M98 25 l5 5 -5 5"/>
+        <rect class="zp-box" x="110" y="4" width="46" height="52" rx="4"/>
+        <g class="zp zp-solid"><circle cx="122" cy="34" r="4"/><circle cx="133" cy="34" r="4"/><circle cx="144" cy="34" r="4"/><circle cx="122" cy="43" r="4"/><circle cx="133" cy="43" r="4"/><circle cx="144" cy="43" r="4"/><circle cx="122" cy="25" r="4"/><circle cx="133" cy="25" r="4"/><circle cx="144" cy="25" r="4"/></g>
+        <g class="zp zp-liquid"><circle cx="117" cy="49" r="4"/><circle cx="127" cy="50" r="4"/><circle cx="137" cy="48" r="4"/><circle cx="148" cy="50" r="4"/><circle cx="121" cy="41" r="4"/><circle cx="131" cy="41" r="4"/><circle cx="142" cy="42" r="4"/><circle cx="126" cy="33" r="4"/><circle cx="138" cy="34" r="4"/></g>
+        <g class="zp zp-gas"><circle cx="118" cy="13" r="4"/><circle cx="146" cy="11" r="4"/><circle cx="132" cy="27" r="4"/><circle cx="117" cy="46" r="4"/><circle cx="149" cy="40" r="4"/><circle cx="134" cy="50" r="4"/></g>
+      </svg>
+      <p class="zoom-txt"><b>ซูมเข้าไปในน้ำ</b><small>ขยายใหญ่มาก ของจริงมองไม่เห็น · อนุภาคมีขนาดเท่าเดิม</small></p>
+    </div>
     <p class="ar-hint" id="arHint">ลากเพื่อย้าย · ใช้สองนิ้วถ่างหรือหุบเพื่อย่อขยาย</p>
     <div class="ar-tools">
       <button class="tbtn" id="arFlip" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2M20 4v4h-4M4 20v-4h4"/></svg><span class="lbl">สลับกล้อง</span></button>
@@ -869,15 +1010,38 @@ button, a { font: inherit; color: inherit; }
     <div class="pctrl ar-ctrl">
       <span class="spill" data-pill></span>
       <p class="smsg" data-msg></p>
+      <p class="sres" data-result hidden></p>
       <div class="pbtns">
         <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
         <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
+      </div>
+      <div class="pextra">
+        <button class="minibtn" type="button" data-check>เช็กลิสต์ 3 ข้อ</button>
+        <label class="ptoggle"><input type="checkbox" data-predict checked> ทายก่อนกด</label>
       </div>
     </div>
   </div>
   <input type="file" id="arShoot" accept="image/*" capture="environment" hidden>
   <input type="file" id="arPick" accept="image/*" hidden>
 </section>
+
+<!-- shared sheets for modes 2 + 3 (moved into the open mode) -->
+<div class="sheet" id="qSheet" hidden>
+  <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+    <p class="q-kicker">ทายก่อนดู</p>
+    <h2 id="qTitle"></h2>
+    <div class="q-opts" id="qOpts"></div>
+    <button class="tbtn" id="qSkip" type="button">ข้าม ไม่ทาย</button>
+  </div>
+</div>
+<div class="check-card" id="checkCard" hidden role="dialog" aria-labelledby="ckTitle">
+  <div class="ck-head"><h2 id="ckTitle">เช็กลิสต์ 3 ข้อ</h2><button class="ck-x" id="ckClose" type="button" aria-label="ปิดเช็กลิสต์">×</button></div>
+  <p class="ck-state" id="ckState"></p>
+  <div class="ck-row" data-row="gap"><span class="ck-q">1. อนุภาคอยู่</span><div class="ck-opts"><button type="button" data-v="close">ชิดกัน</button><button type="button" data-v="far">ห่างกันมาก</button></div><span class="ck-mark"></span></div>
+  <div class="ck-row" data-row="order"><span class="ck-q">2. การเรียงตัว</span><div class="ck-opts"><button type="button" data-v="neat">เป็นระเบียบ</button><button type="button" data-v="messy">ไม่เป็นระเบียบ</button></div><span class="ck-mark"></span></div>
+  <div class="ck-row" data-row="move"><span class="ck-q">3. การเคลื่อนที่</span><div class="ck-opts"><button type="button" data-v="vib">สั่นอยู่กับที่</button><button type="button" data-v="flow">ไหลไปมา</button><button type="button" data-v="fast">เร็วไปทั่ว</button></div><span class="ck-mark"></span></div>
+  <div class="ck-foot"><button class="tbtn primary" id="ckCheck" type="button">ตรวจคำตอบ</button><p class="ck-res" id="ckRes"></p></div>
+</div>
 
 <script>
 (() => {
@@ -909,6 +1073,9 @@ button, a { font: inherit; color: inherit; }
     keepAwake(name === 'holo' || name === 'ar');
     if (name === 'fridge') { requestAnimationFrame(() => { layout1(); place1(false); }); }
     if (name !== 'holo') $('helpSheet').hidden = true;
+    $('qSheet').hidden = true;
+    $('checkCard').hidden = true;
+    if (name === 'ar') { $('arHint').hidden = false; setTimeout(() => { $('arHint').hidden = true; }, 8000); }
     window.scrollTo(0, 0);
     last = performance.now();
   }
@@ -1250,19 +1417,133 @@ button, a { font: inherit; color: inherit; }
     boiling: 'น้ำได้รับความร้อนและกลายเป็นไอ',
     condensing: 'ไอน้ำสูญเสียความร้อนและควบแน่นเป็นน้ำ'
   };
-  document.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
-    ps.level = clamp(ps.level + (b.dataset.act === 'heat' ? 1 : -1), 0, 2);
+  const STABLE = ['solid', 'liquid', 'gas'];
+  const domState = () => (ps.s > 0.5 ? 'solid' : ps.g > 0.5 ? 'gas' : 'liquid');
+
+  /* ---- predict before pressing ---- */
+  const PQ = {
+    up0: { q: 'ถ้าน้ำแข็งได้รับความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['อนุภาคตัวใหญ่ขึ้น', 'อนุภาคหลุดจากที่ แล้วไหลไปมาได้', 'อนุภาคหายไป'], ok: 1, why: 'ได้รับความร้อน อนุภาคเคลื่อนที่มากขึ้นจนหลุดจากที่ กลายเป็นของเหลว ขนาดอนุภาคยังเท่าเดิม' },
+    up1: { q: 'ถ้าน้ำได้รับความร้อนต่อไปอีก อนุภาคจะเป็นอย่างไร?', opts: ['อยู่ห่างกันมาก เคลื่อนที่เร็วไปทั่วภาชนะ', 'อยู่ชิดกันมากขึ้น', 'ตัวเล็กลงจนหายไป'], ok: 0, why: 'ได้รับความร้อน อนุภาคเคลื่อนที่เร็วขึ้นจนแยกห่างกัน กลายเป็นแก๊ส (ไอน้ำ) ขนาดอนุภาคยังเท่าเดิม' },
+    down2: { q: 'ถ้าไอน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เคลื่อนที่เร็วขึ้น', 'หลุดออกไปนอกภาชนะ', 'ช้าลง แล้วกลับมาอยู่ชิดกันเป็นของเหลว'], ok: 2, why: 'สูญเสียความร้อน อนุภาคเคลื่อนที่ช้าลงและกลับมาอยู่ชิดกัน ไอน้ำควบแน่นเป็นน้ำ' },
+    down1: { q: 'ถ้าน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เรียงตัวเป็นระเบียบ สั่นอยู่กับที่', 'ตัวหดเล็กลง', 'เคลื่อนที่เร็วขึ้น'], ok: 0, why: 'สูญเสียความร้อน อนุภาคเคลื่อนที่ช้าลงจนเรียงเป็นระเบียบ สั่นอยู่กับที่ น้ำแข็งตัวเป็นน้ำแข็ง' }
+  };
+  let predictOn = true, pending = null, qCtx = null, resT = 0;
+  const qSheet = $('qSheet');
+  function showResult(text, cls) {
+    document.querySelectorAll('[data-result]').forEach((el) => {
+      el.textContent = text;
+      el.className = 'sres ' + (cls || '');
+      el.hidden = !text;
+    });
+    clearTimeout(resT);
+    if (text) resT = setTimeout(() => showResult(''), 8000);
+  }
+  function applyLevel(to, pred) {
+    ps.level = to;
+    pending = pred ? Object.assign({ target: STABLE[to] }, pred) : null;
+    showResult('');
     updatePUI(true);
+  }
+  function openQuestion(key, to) {
+    const Q = PQ[key];
+    qCtx = { Q, to };
+    $('qTitle').textContent = Q.q;
+    const box = $('qOpts');
+    box.textContent = '';
+    Q.opts.forEach((o, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'q-opt';
+      b.textContent = o;
+      b.addEventListener('click', () => {
+        qSheet.hidden = true;
+        applyLevel(qCtx.to, { chosen: i, Q: qCtx.Q });
+        showResult('ทายแล้ว ลองดูอนุภาคว่าเป็นอย่างที่ทายไหม', '');
+      });
+      box.appendChild(b);
+    });
+    VIEWS[view].appendChild(qSheet);
+    qSheet.hidden = false;
+    box.firstChild.focus();
+  }
+  $('qSkip').addEventListener('click', () => { qSheet.hidden = true; if (qCtx) applyLevel(qCtx.to, null); });
+  document.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
+    const up = b.dataset.act === 'heat';
+    const to = clamp(ps.level + (up ? 1 : -1), 0, 2);
+    if (to === ps.level) return;
+    const key = (up ? 'up' : 'down') + ps.level;
+    if (predictOn && PQ[key]) openQuestion(key, to); else applyLevel(to, null);
   }));
-  let lastPK = '';
+  document.querySelectorAll('[data-predict]').forEach((cb) => cb.addEventListener('change', () => {
+    predictOn = cb.checked;
+    document.querySelectorAll('[data-predict]').forEach((o) => { o.checked = predictOn; });
+  }));
+
+  /* ---- 3-point checklist ---- */
+  const TRUTH = {
+    solid: { gap: 'close', order: 'neat', move: 'vib' },
+    liquid: { gap: 'close', order: 'messy', move: 'flow' },
+    gas: { gap: 'far', order: 'messy', move: 'fast' }
+  };
+  const ckCard = $('checkCard');
+  let ckSel = {};
+  function resetChecklist() {
+    ckSel = {};
+    ckCard.querySelectorAll('.ck-opts button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    ckCard.querySelectorAll('.ck-mark').forEach((m) => { m.textContent = ''; m.className = 'ck-mark'; });
+    $('ckRes').textContent = '';
+    $('ckRes').className = 'ck-res';
+  }
+  ckCard.querySelectorAll('.ck-opts button').forEach((b) => b.addEventListener('click', () => {
+    const row = b.closest('.ck-row');
+    ckSel[row.dataset.row] = b.dataset.v;
+    row.querySelectorAll('.ck-opts button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    row.querySelector('.ck-mark').textContent = '';
+    $('ckRes').textContent = '';
+  }));
+  $('ckCheck').addEventListener('click', () => {
+    const k = pKey();
+    const truth = TRUTH[k];
+    const res = $('ckRes');
+    if (!truth) { res.textContent = 'รอให้เปลี่ยนสถานะเสร็จก่อน แล้วค่อยตรวจ'; res.className = 'ck-res'; return; }
+    let n = 0;
+    ckCard.querySelectorAll('.ck-row').forEach((row) => {
+      const r = row.dataset.row, mark = row.querySelector('.ck-mark');
+      if (!ckSel[r]) { mark.textContent = '?'; mark.className = 'ck-mark'; return; }
+      const ok = ckSel[r] === truth[r];
+      if (ok) n++;
+      mark.textContent = ok ? '✓' : '✗';
+      mark.className = 'ck-mark ' + (ok ? 'ok' : 'no');
+    });
+    res.textContent = 'ถูก ' + n + ' จาก 3 ข้อ' + (n === 3 ? ' เก่งมาก!' : ' ลองสังเกตอนุภาคอีกครั้ง');
+    res.className = 'ck-res' + (n === 3 ? ' good' : '');
+  });
+  document.querySelectorAll('[data-check]').forEach((b) => b.addEventListener('click', () => {
+    if (!ckCard.hidden && ckCard.parentElement === VIEWS[view]) { ckCard.hidden = true; return; }
+    VIEWS[view].appendChild(ckCard);
+    ckCard.hidden = false;
+    $('ckClose').focus();
+  }));
+  $('ckClose').addEventListener('click', () => { ckCard.hidden = true; });
+
+  let lastPK = '', lastStable = '';
   function updatePUI(force) {
     const k = pKey();
+    const zs = domState();
+    document.querySelectorAll('[data-zoom]').forEach((z) => { if (z.dataset.state !== zs) z.dataset.state = zs; });
     if (k === lastPK && !force) return;
     lastPK = k;
     document.querySelectorAll('[data-pill]').forEach((el) => { el.textContent = PPILL[k]; });
     document.querySelectorAll('[data-msg]').forEach((el) => { el.textContent = PMSG[k]; });
     document.querySelectorAll('[data-act="heat"]').forEach((b) => { b.disabled = ps.level >= 2; });
     document.querySelectorAll('[data-act="cool"]').forEach((b) => { b.disabled = ps.level <= 0; });
+    $('ckState').textContent = TRUTH[k] ? 'ตอนนี้: ' + PPILL[k] + ' ดูอนุภาคแล้วเลือกคำตอบ' : 'กำลังเปลี่ยนสถานะ รอสักครู่';
+    if (TRUTH[k] && k !== lastStable) { lastStable = k; resetChecklist(); }
+    if (pending && k === pending.target) {
+      const good = pending.chosen === pending.Q.ok;
+      showResult((good ? 'ทายถูก! ' : 'ยังไม่ตรงกับที่ทาย ') + pending.Q.why, good ? 'good' : 'miss');
+      pending = null;
+    }
   }
 
   // 27 particles: st 0 solid, 1 liquid, 2 gas
@@ -1416,6 +1697,25 @@ button, a { font: inherit; color: inherit; }
       ctx.moveTo(a1[0], a1[1]); ctx.lineTo(b1[0], b1[1]);
     }
     ctx.stroke();
+    // label the box as a closed container, at its top corner furthest right on screen
+    let tc = null;
+    for (const c of cs) { const q = P(c[0], BOX_Y1, c[1]); if (!tc || q[0] > tc[0]) tc = q; }
+    const fsz = Math.max(11, unit * 0.3);
+    ctx.font = '600 ' + fsz.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+    if (glow) {
+      ctx.fillStyle = cyanA(0.85);
+      ctx.fillText('ภาชนะปิด', tc[0] + 6, tc[1]);
+    } else {
+      const tw = ctx.measureText('ภาชนะปิด').width;
+      ctx.fillStyle = 'rgba(20,38,64,0.8)';
+      ctx.fillRect(tc[0] + 4, tc[1] - fsz * 0.8, tw + fsz * 0.8, fsz * 1.6);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('ภาชนะปิด', tc[0] + 4 + fsz * 0.4, tc[1]);
+      ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 4;
+    }
     const pr = parts.map((p) => P(p.p[0], p.p[1], p.p[2]));
     ctx.strokeStyle = glow ? cyanA(0.42) : whiteA(0.85);
     ctx.lineWidth = Math.max(1, unit * (glow ? 0.045 : 0.06));
@@ -1504,6 +1804,7 @@ button, a { font: inherit; color: inherit; }
       o.setTransform(dpr, 0, 0, dpr, 0, 0);
       o.clearRect(0, 0, v, v);
       drawParticles(o, v / 2, v / 2 - v * 0.05, v / 8.6, az + V.az, el, 'glow');
+      drawMacro(o, v);
       o.fillStyle = '#BFF6FC';
       o.textAlign = 'center';
       o.textBaseline = 'alphabetic';
@@ -1514,6 +1815,38 @@ button, a { font: inherit; color: inherit; }
       ctx.drawImage(off, -v / 2, -v / 2, v, v);
     }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  // the real thing (ice / water / vapour) in a corner of each view, with a lens pointing at its particles
+  const MACRO = {
+    solid: new Path2D('M30 12 H70 Q88 12 88 30 V70 Q88 88 70 88 H30 Q12 88 12 70 V30 Q12 12 30 12 Z'),
+    liquid: new Path2D('M50 9 C 40 26, 17 42, 17 61 C 17 80, 32 92, 50 92 C 68 92, 83 80, 83 61 C 83 42, 60 26, 50 9 Z'),
+    gas: new Path2D('M55 12 C 75 14, 80 34, 66 44 C 82 52, 80 74, 62 80 C 58 92, 40 94, 34 84 C 18 82, 16 62, 30 56 C 20 44, 30 28, 44 30 C 44 20, 48 12, 55 12 Z')
+  };
+  function drawMacro(o, v) {
+    const s = v * 0.17, x = v * 0.04, y = v * 0.04;
+    const k = domState();
+    o.save();
+    o.translate(x, y);
+    o.scale(s / 100, s / 100);
+    o.fillStyle = cyanA(0.16);
+    o.strokeStyle = 'rgba(191,246,252,0.95)';
+    o.lineWidth = 2 / (s / 100);
+    o.lineJoin = 'round';
+    if (k === 'gas') o.setLineDash([8, 6]);
+    o.fill(MACRO[k]);
+    o.stroke(MACRO[k]);
+    o.restore();
+    const lx = x + s * 1.35, ly = y + s * 0.45, lr = s * 0.24;
+    o.save();
+    o.strokeStyle = 'rgba(191,246,252,0.9)';
+    o.lineWidth = Math.max(1.5, s * 0.05);
+    o.lineCap = 'round';
+    o.beginPath(); o.arc(lx, ly, lr, 0, Math.PI * 2); o.stroke();
+    o.beginPath(); o.moveTo(lx + lr * 0.7, ly + lr * 0.7); o.lineTo(lx + lr * 1.4, ly + lr * 1.4); o.stroke();
+    o.setLineDash([3, 5]);
+    o.lineWidth = Math.max(1, s * 0.03);
+    o.beginPath(); o.moveTo(lx + lr * 1.5, ly + lr * 1.5); o.lineTo(v * 0.42, v * 0.38); o.stroke();
+    o.restore();
   }
   $('hMinus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale - 0.1) * 10) / 10, 0.6, 1.3); });
   $('hPlus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale + 0.1) * 10) / 10, 0.6, 1.3); });
@@ -1530,6 +1863,7 @@ button, a { font: inherit; color: inherit; }
     try { acv.setPointerCapture(e.pointerId); } catch (err) {}
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     lastRot = performance.now();
+    $('arHint').hidden = true;
     if (pointers.size === 2) {
       const [a, b] = [...pointers.values()];
       pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: arScale };
