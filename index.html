@@ -1655,6 +1655,15 @@ button, a { font: inherit; color: inherit; }
     const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
     if (!blob) { arToast('เก็บภาพไม่ได้'); return; }
     const name = 'particles-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.png';
+    if (window.claude && typeof window.claude.use === 'function') {
+      let dl = null;
+      try { dl = await window.claude.use('downloads'); } catch (e) { dl = null; }
+      if (dl) {
+        try { await dl.save({ filename: name, data: blob }); arToast('บันทึกภาพแล้ว'); }
+        catch (e) { if (!e || e.code !== 'declined') arToast('เก็บภาพในหน้านี้ไม่ได้'); }
+        return;
+      }
+    }
     let file = null;
     try { file = new File([blob], name, { type: 'image/png' }); } catch (e) { file = null; }
     try {
