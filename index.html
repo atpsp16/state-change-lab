@@ -404,16 +404,83 @@ button, a { font: inherit; color: inherit; }
 .v-ar .stage-area { top: 0; }
 .stage-area canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 #hcv, #acv { touch-action: none; }
-.pctrl {
+/* control dock: a band of its own, the hologram / AR model is laid out in the space that is left */
+.dock {
   position: absolute;
   z-index: 4;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  justify-items: center;
-  padding: 10px;
+  padding: 10px 12px;
 }
-.pctrl .spill {
-  padding: 6px 16px;
+@media (orientation: portrait) {
+  .dock {
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(640px, 100%);
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+  .side-panel { display: none !important; }
+}
+@media (orientation: landscape) {
+  .dock {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: calc(clamp(210px, 24vw, 270px) + env(safe-area-inset-right, 0px));
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .side-panel { width: calc(clamp(230px, 26vw, 290px) + env(safe-area-inset-left, 0px)); }
+  /* AR has no stage offset, so its panels start below the top bar */
+  .v-ar .ar-dock, .v-ar .ar-side { top: calc(58px + env(safe-area-inset-top, 0px)); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .v-ar .ar-dock, .v-ar .ar-side { top: calc(46px + env(safe-area-inset-top, 0px)); }
+  .dock .pbtns { gap: 8px; }
+  .dock .pbtn { padding: 0 6px; gap: 4px; }
+  .dock .pbtn svg { display: none; }
+  .dock .sizer > span.lbl { display: none; }
+}
+@media (orientation: portrait) and (max-width: 480px) {
+  .dock-tip { display: none; }
+}
+/* centred when it fits, scrolls from the top when it does not (plain centring would cut the top off) */
+.dock > :first-child, .side-panel > :first-child { margin-top: auto; }
+.dock > :last-child, .side-panel > :last-child { margin-bottom: auto; }
+/* portrait: while the checklist is open it takes the place of the controls, so the model keeps its size */
+.dock.checking > :not(.check-card) { display: none !important; }
+@media (max-height: 500px) {
+  .side-panel .check-card { gap: 4px; padding: 8px 10px; }
+  .side-panel .ck-head h2 { font-size: 16px; }
+  .side-panel .ck-x { width: 34px; height: 34px; font-size: 18px; }
+  .side-panel .ck-state, .side-panel .ck-q { font-size: 13px; }
+  .side-panel .ck-opts { gap: 4px; }
+  .side-panel .ck-opts button { min-height: 32px; padding: 2px 8px; font-size: 13px; }
+  .side-panel .ck-foot .tbtn { min-height: 38px; }
+}
+.side-panel {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: clamp(230px, 26vw, 290px);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.dock-state { display: grid; gap: 6px; justify-items: center; text-align: center; }
+.spill {
+  padding: 5px 16px;
   border-radius: 999px;
   border: 2px solid var(--char-line);
   background: #FFFFFF;
@@ -424,7 +491,46 @@ button, a { font: inherit; color: inherit; }
   line-height: 1.3;
   text-align: center;
 }
-.pctrl .smsg { margin: 0; max-width: 300px; text-align: center; font-size: 15px; line-height: 1.4; color: #E6F7FF; min-height: 2.8em; }
+/* message and result share one fixed-height slot, so the projection never jumps */
+.dock .smsg, .dock .sres {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  height: calc(3 * 1.35em + 8px);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-align: center;
+}
+.dock .sres { font-weight: 700; }
+.dock .smsg { color: #E6F7FF; }
+.dock .sres[hidden] { display: none; }
+.sres:not([hidden]) + .smsg { display: none; }
+.dock .pbtns { gap: 10px; }
+.dock .pbtn { flex: 1 1 0; min-width: 0; height: 56px; padding: 0 10px; font-size: 18px; }
+.dock-tools { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; }
+.dock-tip { margin: 0; font-size: 13px; line-height: 1.35; color: #9FB7C9; text-align: center; }
+.holo-dock .zoom { display: none; }
+@media (orientation: landscape) and (min-height: 620px) { .holo-dock .zoom { display: grid; } }
+@media (max-height: 500px) {
+  .dock { gap: 6px; padding-top: 6px; }
+  .dock .pbtn { height: 46px; font-size: 16px; box-shadow: 0 3px 0 var(--char-line); }
+  .dock .pbtn svg { width: 20px; height: 20px; }
+  .dock .smsg, .dock .sres { -webkit-line-clamp: 2; height: calc(2 * 1.35em + 8px); }
+  .dock-tip { display: none; }
+  .spill { font-size: 16px; padding: 3px 12px; }
+}
+.ar-dock, .ar-side { background: rgba(11, 20, 36, 0.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+@media (orientation: portrait) { .ar-dock { border-radius: 20px 20px 0 0; } }
+@media (orientation: landscape) { .ar-dock { border-radius: 20px 0 0 20px; } .ar-side { border-radius: 0 20px 20px 0; } }
+.ar-dock .smsg { color: #FFFFFF; }
+.v-holo .spill { background: transparent; color: #E6F7FF; border-color: rgba(79, 228, 244, 0.6); }
 .pbtns { display: flex; gap: 12px; }
 .pbtn {
   display: inline-flex;
@@ -450,26 +556,15 @@ button, a { font: inherit; color: inherit; }
 .pbtn.cold { background: var(--btn-cold); }
 .pbtn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .pbtn.hot svg circle { fill: currentColor; }
-/* hologram controls sit outside the projection square */
-.holo-ctrl { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); }
-@media (orientation: landscape) {
-  .holo-ctrl { left: auto; bottom: auto; top: 50%; right: max(12px, env(safe-area-inset-right, 0px)); transform: translateY(-50%); }
-  .holo-ctrl .pbtns { flex-direction: column; }
-  .holo-ctrl .smsg { max-width: 180px; }
+.sizer { display: inline-flex; align-items: center; gap: 4px; color: #9FB7C9; font-size: 14px; }
+.sizer button { min-width: 40px; min-height: 40px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.25); background: transparent; color: #E6F7FF; font-size: 20px; cursor: pointer; }
+/* short screens (phone held sideways): slimmer top bar so the hologram keeps its height */
+@media (max-height: 500px) {
+  .fixed-view .topbar { min-height: 44px; padding-top: calc(2px + env(safe-area-inset-top, 0px)); padding-bottom: 2px; }
+  .fixed-view .tbtn { min-height: 40px; min-width: 40px; padding: 4px 10px; }
+  .fixed-view .topbar h1 { font-size: 18px; }
+  .v-holo .stage-area { top: calc(46px + env(safe-area-inset-top, 0px)); }
 }
-.sizer { display: inline-flex; align-items: center; gap: 6px; color: #9FB7C9; font-size: 14px; }
-.sizer button { min-width: 44px; min-height: 40px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.25); background: transparent; color: #E6F7FF; font-size: 20px; cursor: pointer; }
-.holo-tip {
-  position: absolute;
-  left: max(14px, env(safe-area-inset-left, 0px));
-  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-  z-index: 4;
-  margin: 0;
-  max-width: 220px;
-  color: #9FB7C9;
-  font-size: 14px;
-}
-@media (orientation: portrait) { .holo-tip { display: none; } }
 
 /* help sheet */
 .sheet {
@@ -541,8 +636,6 @@ button, a { font: inherit; color: inherit; }
 .ar-start .tbtn { background: #FFFFFF; border-color: #9DB6CF; color: #142640; }
 .ar-start .tbtn.primary { background: #0058AF; border-color: #0058AF; color: #FFFFFF; }
 .ar-start .msg { font-size: 15px; color: #9A3412; }
-.ar-ctrl { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); }
-.ar-ctrl .smsg { color: #FFFFFF; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
 .ar-hint {
   position: absolute;
   z-index: 4;
@@ -666,15 +759,20 @@ button, a { font: inherit; color: inherit; }
 .ck-foot { display: grid; gap: 6px; justify-items: start; }
 .ck-res { margin: 0; font-weight: 700; }
 .ck-res.good { color: #08704F; }
-.ar-tools {
-  position: absolute;
-  z-index: 4;
-  top: 50%;
-  right: max(12px, env(safe-area-inset-right, 0px));
-  transform: translateY(-50%);
-  display: grid;
-  gap: 8px;
-}
+/* checklist living inside the dock (portrait) or the side panel (landscape) */
+.dock .check-card, .side-panel .check-card { position: static; width: auto; max-height: none; overflow: visible; box-shadow: none; border-width: 2px; padding: 10px 12px; gap: 6px; }
+.dock .ck-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+.dock .ck-q { grid-column: auto; font-size: 14px; }
+.dock .ck-head h2 { font-size: 17px; }
+.dock .ck-foot { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.v-holo .check-card { background: #07161F; color: #E6F7FF; border-color: rgba(79, 228, 244, 0.5); }
+.v-holo .ck-x { background: transparent; color: #E6F7FF; border-color: rgba(255, 255, 255, 0.3); }
+.v-holo .ck-state { color: #7FE9F5; }
+.v-holo .ck-opts button { background: transparent; color: #E6F7FF; border-color: rgba(255, 255, 255, 0.3); }
+.v-holo .ck-opts button[aria-pressed="true"] { background: #4FE4F4; border-color: #4FE4F4; color: #04121A; }
+.v-holo .ck-mark.ok, .v-holo .ck-res.good { color: #69DFAD; }
+.v-holo .ck-mark.no { color: #FF8A70; }
+.v-ar:has(.ar-side:not([hidden])) .ar-zoom { display: none; }
 .ar-toast {
   position: absolute;
   z-index: 7;
@@ -911,7 +1009,8 @@ button, a { font: inherit; color: inherit; }
   </header>
   <div class="stage-area" id="holoArea">
     <canvas id="hcv" aria-label="ภาพอนุภาค 4 ด้านสำหรับพีระมิดใส"></canvas>
-    <div class="pctrl holo-ctrl">
+    <div class="side-panel holo-side" id="holoSide" hidden></div>
+    <div class="dock holo-dock" id="holoDock">
       <div class="zoom" data-zoom data-state="solid">
         <svg class="zoom-art" viewBox="0 0 160 60" aria-hidden="true">
           <g class="zi zi-solid"><rect class="zi-ice" x="6" y="10" width="40" height="40" rx="10"/><circle class="zi-eye" cx="20" cy="30" r="2.4"/><circle class="zi-eye" cx="32" cy="30" r="2.4"/><path class="zi-mouth" d="M22 37 Q26 40 30 37"/></g>
@@ -926,20 +1025,22 @@ button, a { font: inherit; color: inherit; }
         </svg>
         <p class="zoom-txt"><b>ซูมเข้าไปในน้ำ</b><small>ขยายใหญ่มาก ของจริงมองไม่เห็น · อนุภาคมีขนาดเท่าเดิม</small></p>
       </div>
-      <span class="spill" data-pill></span>
-      <p class="smsg" data-msg></p>
-      <p class="sres" data-result hidden></p>
+      <div class="dock-state">
+        <span class="spill" data-pill></span>
+        <p class="sres" data-result hidden></p>
+        <p class="smsg" data-msg></p>
+      </div>
       <div class="pbtns">
         <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
         <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
       </div>
-      <span class="sizer">ขนาดภาพ <button type="button" id="hMinus" aria-label="ย่อภาพ">−</button><button type="button" id="hPlus" aria-label="ขยายภาพ">+</button></span>
-      <div class="pextra">
+      <div class="dock-tools">
         <button class="minibtn" type="button" data-check>เช็กลิสต์ 3 ข้อ</button>
         <label class="ptoggle"><input type="checkbox" data-predict checked> ทายก่อนกด</label>
+        <span class="sizer"><span class="lbl">ขนาด</span> <button type="button" id="hMinus" aria-label="ย่อภาพ">−</button><button type="button" id="hPlus" aria-label="ขยายภาพ">+</button></span>
       </div>
+      <p class="dock-tip">คว่ำพีระมิดใสลงตรงกรอบสี่เหลี่ยมกลางจอ ทำห้องให้มืด แล้วมองจากด้านข้าง</p>
     </div>
-    <p class="holo-tip">คว่ำพีระมิดใสลงตรงกรอบสี่เหลี่ยมกลางจอ ทำห้องให้มืด แล้วมองจากด้านข้าง</p>
   </div>
   <div class="sheet" id="helpSheet" hidden>
     <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
@@ -968,6 +1069,8 @@ button, a { font: inherit; color: inherit; }
   <header class="topbar">
     <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
     <h1 id="m3Title">AR</h1>
+    <button class="tbtn" id="arFlip" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2M20 4v4h-4M4 20v-4h4"/></svg><span class="lbl">สลับกล้อง</span></button>
+    <button class="tbtn" id="arSnap" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v10M7.5 9.5 12 14l4.5-4.5M5 18h14"/></svg><span class="lbl">เก็บภาพ</span></button>
     <button class="tbtn" id="arBgBtn" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg><span class="lbl">พื้นหลัง</span></button>
     <a class="tbtn" href="#fridge"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
   </header>
@@ -991,10 +1094,6 @@ button, a { font: inherit; color: inherit; }
       <p class="zoom-txt"><b>ซูมเข้าไปในน้ำ</b><small>ขยายใหญ่มาก ของจริงมองไม่เห็น · อนุภาคมีขนาดเท่าเดิม</small></p>
     </div>
     <p class="ar-hint" id="arHint">ลากเพื่อย้าย · ใช้สองนิ้วถ่างหรือหุบเพื่อย่อขยาย</p>
-    <div class="ar-tools">
-      <button class="tbtn" id="arFlip" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2M20 4v4h-4M4 20v-4h4"/></svg><span class="lbl">สลับกล้อง</span></button>
-      <button class="tbtn" id="arSnap" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/></svg><span class="lbl">เก็บภาพ</span></button>
-    </div>
     <p class="ar-toast" id="arToast" hidden></p>
     <div class="ar-start" id="arStart">
       <h2>วางอนุภาคในห้องของเรา</h2>
@@ -1007,15 +1106,18 @@ button, a { font: inherit; color: inherit; }
       <p class="msg" id="arMsg" hidden></p>
       <button class="tbtn" id="arSkip" type="button">ใช้ภาพห้องตัวอย่าง</button>
     </div>
-    <div class="pctrl ar-ctrl">
-      <span class="spill" data-pill></span>
-      <p class="smsg" data-msg></p>
-      <p class="sres" data-result hidden></p>
+    <div class="side-panel ar-side" id="arSide" hidden></div>
+    <div class="dock ar-dock" id="arDock">
+      <div class="dock-state">
+        <span class="spill" data-pill></span>
+        <p class="sres" data-result hidden></p>
+        <p class="smsg" data-msg></p>
+      </div>
       <div class="pbtns">
         <button class="pbtn hot" type="button" data-act="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
         <button class="pbtn cold" type="button" data-act="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
       </div>
-      <div class="pextra">
+      <div class="dock-tools">
         <button class="minibtn" type="button" data-check>เช็กลิสต์ 3 ข้อ</button>
         <label class="ptoggle"><input type="checkbox" data-predict checked> ทายก่อนกด</label>
       </div>
@@ -1075,6 +1177,10 @@ button, a { font: inherit; color: inherit; }
     if (name !== 'holo') $('helpSheet').hidden = true;
     $('qSheet').hidden = true;
     $('checkCard').hidden = true;
+    $('holoSide').hidden = true;
+    $('arSide').hidden = true;
+    $('holoDock').classList.remove('checking');
+    $('arDock').classList.remove('checking');
     if (name === 'ar') { $('arHint').hidden = false; setTimeout(() => { $('arHint').hidden = true; }, 8000); }
     window.scrollTo(0, 0);
     last = performance.now();
@@ -1422,10 +1528,10 @@ button, a { font: inherit; color: inherit; }
 
   /* ---- predict before pressing ---- */
   const PQ = {
-    up0: { q: 'ถ้าน้ำแข็งได้รับความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['อนุภาคตัวใหญ่ขึ้น', 'อนุภาคหลุดจากที่ แล้วไหลไปมาได้', 'อนุภาคหายไป'], ok: 1, why: 'ได้รับความร้อน อนุภาคเคลื่อนที่มากขึ้นจนหลุดจากที่ กลายเป็นของเหลว ขนาดอนุภาคยังเท่าเดิม' },
-    up1: { q: 'ถ้าน้ำได้รับความร้อนต่อไปอีก อนุภาคจะเป็นอย่างไร?', opts: ['อยู่ห่างกันมาก เคลื่อนที่เร็วไปทั่วภาชนะ', 'อยู่ชิดกันมากขึ้น', 'ตัวเล็กลงจนหายไป'], ok: 0, why: 'ได้รับความร้อน อนุภาคเคลื่อนที่เร็วขึ้นจนแยกห่างกัน กลายเป็นแก๊ส (ไอน้ำ) ขนาดอนุภาคยังเท่าเดิม' },
-    down2: { q: 'ถ้าไอน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เคลื่อนที่เร็วขึ้น', 'หลุดออกไปนอกภาชนะ', 'ช้าลง แล้วกลับมาอยู่ชิดกันเป็นของเหลว'], ok: 2, why: 'สูญเสียความร้อน อนุภาคเคลื่อนที่ช้าลงและกลับมาอยู่ชิดกัน ไอน้ำควบแน่นเป็นน้ำ' },
-    down1: { q: 'ถ้าน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เรียงตัวเป็นระเบียบ สั่นอยู่กับที่', 'ตัวหดเล็กลง', 'เคลื่อนที่เร็วขึ้น'], ok: 0, why: 'สูญเสียความร้อน อนุภาคเคลื่อนที่ช้าลงจนเรียงเป็นระเบียบ สั่นอยู่กับที่ น้ำแข็งตัวเป็นน้ำแข็ง' }
+    up0: { q: 'ถ้าน้ำแข็งได้รับความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['อนุภาคตัวใหญ่ขึ้น', 'อนุภาคหลุดจากที่ แล้วไหลไปมาได้', 'อนุภาคหายไป'], ok: 1, why: 'ได้รับความร้อน อนุภาคหลุดจากที่แล้วไหลไปมา ขนาดเท่าเดิม' },
+    up1: { q: 'ถ้าน้ำได้รับความร้อนต่อไปอีก อนุภาคจะเป็นอย่างไร?', opts: ['อยู่ห่างกันมาก เคลื่อนที่เร็วไปทั่วภาชนะ', 'อยู่ชิดกันมากขึ้น', 'ตัวเล็กลงจนหายไป'], ok: 0, why: 'ได้รับความร้อน อนุภาคแยกห่างกัน เร็วไปทั่ว ขนาดเท่าเดิม' },
+    down2: { q: 'ถ้าไอน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เคลื่อนที่เร็วขึ้น', 'หลุดออกไปนอกภาชนะ', 'ช้าลง แล้วกลับมาอยู่ชิดกันเป็นของเหลว'], ok: 2, why: 'สูญเสียความร้อน อนุภาคช้าลงและกลับมาอยู่ชิดกัน' },
+    down1: { q: 'ถ้าน้ำสูญเสียความร้อน อนุภาคจะเป็นอย่างไร?', opts: ['เรียงตัวเป็นระเบียบ สั่นอยู่กับที่', 'ตัวหดเล็กลง', 'เคลื่อนที่เร็วขึ้น'], ok: 0, why: 'สูญเสียความร้อน อนุภาคช้าลงจนเรียงเป็นระเบียบ' }
   };
   let predictOn = true, pending = null, qCtx = null, resT = 0;
   const qSheet = $('qSheet');
@@ -1458,7 +1564,7 @@ button, a { font: inherit; color: inherit; }
       b.addEventListener('click', () => {
         qSheet.hidden = true;
         applyLevel(qCtx.to, { chosen: i, Q: qCtx.Q });
-        showResult('ทายแล้ว ลองดูอนุภาคว่าเป็นอย่างที่ทายไหม', '');
+        showResult('ทายแล้ว ลองดูอนุภาคว่าเป็นอย่างที่ทายไหม');
       });
       box.appendChild(b);
     });
@@ -1518,13 +1624,43 @@ button, a { font: inherit; color: inherit; }
     res.textContent = 'ถูก ' + n + ' จาก 3 ข้อ' + (n === 3 ? ' เก่งมาก!' : ' ลองสังเกตอนุภาคอีกครั้ง');
     res.className = 'ck-res' + (n === 3 ? ' good' : '');
   });
+  // panels never sit on top of the model: the checklist goes into the dock (portrait) or a side panel (landscape)
+  const landMQ = window.matchMedia ? matchMedia('(orientation: landscape)') : { matches: false };
+  const holoDock = $('holoDock'), holoSide = $('holoSide'), arDock = $('arDock'), arSide = $('arSide');
+  const DOCKS = { holo: { dock: holoDock, side: holoSide }, ar: { dock: arDock, side: arSide } };
+  function placeChecklist() {
+    const land = landMQ.matches;
+    for (const [k, dd] of Object.entries(DOCKS)) {
+      const open = k === view && !ckCard.hidden;
+      dd.side.hidden = !(open && land);
+      dd.dock.classList.toggle('checking', open && !land);
+    }
+    const d = DOCKS[view];
+    if (!d) return;
+    if (land) { if (ckCard.parentElement !== d.side) d.side.appendChild(ckCard); }
+    else if (ckCard.parentElement !== d.dock) d.dock.prepend(ckCard);
+  }
+  if (landMQ.addEventListener) landMQ.addEventListener('change', placeChecklist);
+  else if (landMQ.addListener) landMQ.addListener(placeChecklist);
+  // the part of a stage that no panel covers
+  function freeRect(w, h, dock, side, top) {
+    let x0 = 0, y0 = top || 0, x1 = w, y1 = h;
+    if (landMQ.matches) {
+      x1 = w - dock.offsetWidth;
+      if (!side.hidden) x0 = side.offsetWidth;
+    } else {
+      y1 = h - dock.offsetHeight;
+    }
+    if (x1 - x0 < 80) { x0 = 0; x1 = w; }
+    if (y1 - y0 < 80) { y0 = 0; y1 = h; }
+    return { w: x1 - x0, h: y1 - y0, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2 };
+  }
   document.querySelectorAll('[data-check]').forEach((b) => b.addEventListener('click', () => {
-    if (!ckCard.hidden && ckCard.parentElement === VIEWS[view]) { ckCard.hidden = true; return; }
-    VIEWS[view].appendChild(ckCard);
-    ckCard.hidden = false;
-    $('ckClose').focus();
+    ckCard.hidden = !ckCard.hidden;
+    placeChecklist();
+    if (!ckCard.hidden) $('ckClose').focus();
   }));
-  $('ckClose').addEventListener('click', () => { ckCard.hidden = true; });
+  $('ckClose').addEventListener('click', () => { ckCard.hidden = true; placeChecklist(); });
 
   let lastPK = '', lastStable = '';
   function updatePUI(force) {
@@ -1537,11 +1673,11 @@ button, a { font: inherit; color: inherit; }
     document.querySelectorAll('[data-msg]').forEach((el) => { el.textContent = PMSG[k]; });
     document.querySelectorAll('[data-act="heat"]').forEach((b) => { b.disabled = ps.level >= 2; });
     document.querySelectorAll('[data-act="cool"]').forEach((b) => { b.disabled = ps.level <= 0; });
-    $('ckState').textContent = TRUTH[k] ? 'ตอนนี้: ' + PPILL[k] + ' ดูอนุภาคแล้วเลือกคำตอบ' : 'กำลังเปลี่ยนสถานะ รอสักครู่';
+    $('ckState').textContent = TRUTH[k] ? 'ตอนนี้: ' + PPILL[k] : 'กำลังเปลี่ยนสถานะ รอสักครู่';
     if (TRUTH[k] && k !== lastStable) { lastStable = k; resetChecklist(); }
     if (pending && k === pending.target) {
       const good = pending.chosen === pending.Q.ok;
-      showResult((good ? 'ทายถูก! ' : 'ยังไม่ตรงกับที่ทาย ') + pending.Q.why, good ? 'good' : 'miss');
+      showResult((good ? 'ทายถูก! ' : 'ยังไม่ตรงที่ทาย: ') + pending.Q.why, good ? 'good' : 'miss');
       pending = null;
     }
   }
@@ -1697,18 +1833,16 @@ button, a { font: inherit; color: inherit; }
       ctx.moveTo(a1[0], a1[1]); ctx.lineTo(b1[0], b1[1]);
     }
     ctx.stroke();
-    // label the box as a closed container, at its top corner furthest right on screen
-    let tc = null;
-    for (const c of cs) { const q = P(c[0], BOX_Y1, c[1]); if (!tc || q[0] > tc[0]) tc = q; }
-    const fsz = Math.max(11, unit * 0.3);
-    ctx.font = '600 ' + fsz.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'left';
-    ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
-    if (glow) {
-      ctx.fillStyle = cyanA(0.85);
-      ctx.fillText('ภาชนะปิด', tc[0] + 6, tc[1]);
-    } else {
+    // AR only: label the box as a closed container, at its top corner furthest right on screen
+    // (the hologram keeps its views free of text near the model)
+    if (!glow) {
+      let tc = null;
+      for (const c of cs) { const q = P(c[0], BOX_Y1, c[1]); if (!tc || q[0] > tc[0]) tc = q; }
+      const fsz = Math.max(11, unit * 0.3);
+      ctx.font = '600 ' + fsz.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
       const tw = ctx.measureText('ภาชนะปิด').width;
       ctx.fillStyle = 'rgba(20,38,64,0.8)';
       ctx.fillRect(tc[0] + 4, tc[1] - fsz * 0.8, tw + fsz * 0.8, fsz * 1.6);
@@ -1784,17 +1918,20 @@ button, a { font: inherit; color: inherit; }
   function drawHolo() {
     const { w, h, dpr } = fitCanvas(hcv);
     if (!w || !h) return;
+    if (!ckCard.hidden) placeChecklist();
     const ctx = hcv.getContext('2d');
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, hcv.width, hcv.height);
-    const S = Math.min(w, h), R = (S / 2) * holoScale;
+    // lay the four views out only in the space the dock / side panel leave free
+    const fr = freeRect(w, h, holoDock, holoSide, 0);
+    const S = Math.max(80, Math.min(fr.w, fr.h) - 12), R = (S / 2) * holoScale;
     const inner = 0.12 * R, outer = Math.min(0.8 * R, (S / 2) * 0.98);
     const v = outer - inner, c = (inner + outer) / 2;
     const vp = Math.max(1, Math.round(v * dpr));
     if (off.width !== vp) { off.width = vp; off.height = vp; }
     const o = off.getContext('2d');
-    const cx = w / 2, cy = h / 2;
+    const cx = fr.cx, cy = fr.cy;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.strokeStyle = 'rgba(255,255,255,0.22)';
     ctx.lineWidth = 1;
@@ -1803,13 +1940,17 @@ button, a { font: inherit; color: inherit; }
     for (const V of HVIEWS) {
       o.setTransform(dpr, 0, 0, dpr, 0, 0);
       o.clearRect(0, 0, v, v);
-      drawParticles(o, v / 2, v / 2 - v * 0.05, v / 8.6, az + V.az, el, 'glow');
+      // model in the middle band; text and icon keep to the outer edge and the left strip
+      drawParticles(o, v / 2, v * 0.53, v / 9.4, az + V.az, el, 'glow');
       drawMacro(o, v);
+      let fs = Math.max(9, v * 0.06);
+      o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
+      const tw = o.measureText(label).width;
+      if (tw > v * 0.56) { fs *= (v * 0.56) / tw; o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif'; }
       o.fillStyle = '#BFF6FC';
       o.textAlign = 'center';
-      o.textBaseline = 'alphabetic';
-      o.font = '600 ' + Math.max(10, Math.round(v * 0.066)) + 'px Mitr, "Noto Sans Thai", sans-serif';
-      o.fillText(label, v / 2, v * 0.97);
+      o.textBaseline = 'top';
+      o.fillText(label, v / 2, v * 0.025);
       const m = V.m;
       ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * (cx + V.dx * c), dpr * (cy + V.dy * c));
       ctx.drawImage(off, -v / 2, -v / 2, v, v);
@@ -1823,7 +1964,8 @@ button, a { font: inherit; color: inherit; }
     gas: new Path2D('M55 12 C 75 14, 80 34, 66 44 C 82 52, 80 74, 62 80 C 58 92, 40 94, 34 84 C 18 82, 16 62, 30 56 C 20 44, 30 28, 44 30 C 44 20, 48 12, 55 12 Z')
   };
   function drawMacro(o, v) {
-    const s = v * 0.17, x = v * 0.04, y = v * 0.04;
+    // sits in the empty strip left of the model (the model never reaches x < 0.21 v)
+    const s = v * 0.13, x = v * 0.03, y = v * 0.2;
     const k = domState();
     o.save();
     o.translate(x, y);
@@ -1836,16 +1978,16 @@ button, a { font: inherit; color: inherit; }
     o.fill(MACRO[k]);
     o.stroke(MACRO[k]);
     o.restore();
-    const lx = x + s * 1.35, ly = y + s * 0.45, lr = s * 0.24;
+    const lx = x + s * 0.5, ly = y + s * 1.55, lr = s * 0.28;
     o.save();
     o.strokeStyle = 'rgba(191,246,252,0.9)';
-    o.lineWidth = Math.max(1.5, s * 0.05);
+    o.lineWidth = Math.max(1.5, s * 0.06);
     o.lineCap = 'round';
     o.beginPath(); o.arc(lx, ly, lr, 0, Math.PI * 2); o.stroke();
-    o.beginPath(); o.moveTo(lx + lr * 0.7, ly + lr * 0.7); o.lineTo(lx + lr * 1.4, ly + lr * 1.4); o.stroke();
-    o.setLineDash([3, 5]);
-    o.lineWidth = Math.max(1, s * 0.03);
-    o.beginPath(); o.moveTo(lx + lr * 1.5, ly + lr * 1.5); o.lineTo(v * 0.42, v * 0.38); o.stroke();
+    o.beginPath(); o.moveTo(lx + lr * 0.7, ly + lr * 0.7); o.lineTo(lx + lr * 1.35, ly + lr * 1.35); o.stroke();
+    o.setLineDash([3, 4]);
+    o.lineWidth = Math.max(1, s * 0.035);
+    o.beginPath(); o.moveTo(lx + lr * 1.15, ly); o.lineTo(v * 0.19, ly); o.stroke();
     o.restore();
   }
   $('hMinus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale - 0.1) * 10) / 10, 0.6, 1.3); });
@@ -1856,7 +1998,10 @@ button, a { font: inherit; color: inherit; }
 
   /* ---------- AR ---------- */
   const acv = $('acv'), arVid = $('arVid'), arImg = $('arImg');
-  let stream = null, arFx = 0.5, arFy = 0.46, arScale = 1, arUrl = null;
+  let stream = null, arFx = 0.5, arFy = 0.46, arScale = 1, arUrl = null, arMoved = false;
+  const arTop = $('vAr').querySelector('.topbar');
+  // until a child drags it, the model sits in the middle of the space the dock leaves free
+  function arFree() { return freeRect(acv.clientWidth, acv.clientHeight, arDock, arSide, arTop.offsetHeight); }
   const pointers = new Map();
   let pinch = null, dragAR = null;
   acv.addEventListener('pointerdown', (e) => {
@@ -1880,8 +2025,9 @@ button, a { font: inherit; color: inherit; }
       const [a, b] = [...pointers.values()];
       arScale = clamp(pinch.s * (Math.hypot(a.x - b.x, a.y - b.y) / pinch.d), 0.4, 2.6);
     } else if (dragAR) {
+      if (!arMoved) { const fr = arFree(); arFx = fr.cx / r.width; arFy = fr.cy / r.height; arMoved = true; }
       arFx = clamp(arFx + (e.clientX - dragAR.x) / r.width, 0.05, 0.95);
-      arFy = clamp(arFy + (e.clientY - dragAR.y) / r.height, 0.12, 0.9);
+      arFy = clamp(arFy + (e.clientY - dragAR.y) / r.height, 0.08, 0.95);
       dragAR = { x: e.clientX, y: e.clientY };
     }
     lastRot = performance.now();
@@ -1900,7 +2046,10 @@ button, a { font: inherit; color: inherit; }
     const ctx = acv.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
-    drawParticles(ctx, w * arFx, h * arFy, Math.min(w, h) / 8.2 * arScale, az, el, 'ball');
+    if (!ckCard.hidden) placeChecklist();
+    const fr = arFree();
+    const cx = arMoved ? w * arFx : fr.cx, cy = arMoved ? h * arFy : fr.cy;
+    drawParticles(ctx, cx, cy, Math.min(fr.w, fr.h) / 8.2 * arScale, az, el, 'ball');
   }
   function showArMsg(t) { const m = $('arMsg'); m.textContent = t; m.hidden = !t; }
   function setBackground(kind) {
