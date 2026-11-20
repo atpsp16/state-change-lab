@@ -156,7 +156,7 @@ button, a { font: inherit; color: inherit; }
   text-wrap: balance;
 }
 .home-head p.lede { margin: 0; color: var(--muted); max-width: 46ch; }
-.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 767px) { .cards { grid-template-columns: minmax(0, 1fr); } }
 .card {
   display: grid;
@@ -578,6 +578,13 @@ button, a { font: inherit; color: inherit; }
   pointer-events: none;
 }
 .holo-hint[hidden] { display: none; }
+/* hologram box */
+.dock .pbtn.show { flex: none; width: 100%; background: #4FE4F4; color: #04121A; }
+.box-dock .minibtn[aria-pressed="true"] { background: #4FE4F4; border-color: #4FE4F4; color: #04121A; }
+.tp-line { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.tp-sheet { stroke: #1A9FB0; stroke-width: 4; stroke-linecap: round; }
+.tp-ray { fill: none; stroke: #E0533D; stroke-width: 2; stroke-dasharray: 5 4; }
+.tp-dot { fill: #1A9FB0; }
 /* short screens (phone held sideways): slimmer top bar so the hologram keeps its height */
 @media (max-height: 500px) {
   .fixed-view .topbar { min-height: 44px; padding-top: calc(2px + env(safe-area-inset-top, 0px)); padding-bottom: 2px; }
@@ -817,7 +824,7 @@ button, a { font: inherit; color: inherit; }
   <header class="home-head">
     <p class="eyebrow">วิทยาศาสตร์ ป.5</p>
     <h1 id="homeTitle">การเปลี่ยนสถานะของสาร</h1>
-    <p class="lede">เลือกโหมดที่อยากเล่น เล่นต่อกันได้ทั้ง 3 โหมด</p>
+    <p class="lede">เลือกโหมดที่อยากเล่น เล่นต่อกันได้ทั้ง 4 โหมด</p>
   </header>
   <nav class="cards" aria-label="เลือกโหมด">
     <a class="card" href="#fridge" id="cardFridge">
@@ -869,6 +876,30 @@ button, a { font: inherit; color: inherit; }
         <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </span>
     </a>
+    <a class="card" href="#box" id="cardBox">
+      <span class="ill" aria-hidden="true">
+        <svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice">
+          <rect width="240" height="120" fill="#000"/>
+          <!-- kept inside the band y 32–88 that the wide card crop shows -->
+          <rect x="88" y="33" width="64" height="6" rx="2" fill="#2A4A6A"/>
+          <rect x="76" y="40" width="88" height="47" rx="3" fill="#C9A27A"/>
+          <rect x="84" y="46" width="72" height="35" rx="2" fill="#05121A"/>
+          <rect x="100" y="54" width="40" height="19" fill="none" stroke="#4FE4F4" stroke-opacity="0.35" stroke-width="1.2"/>
+          <path d="M84 46 L100 54 M156 46 L140 54 M84 81 L100 73 M156 81 L140 73" stroke="#4FE4F4" stroke-opacity="0.35" stroke-width="1.2"/>
+          <g fill="#4FE4F4">
+            <circle cx="114" cy="56" r="3"/><circle cx="120" cy="56" r="3"/><circle cx="126" cy="56" r="3"/>
+            <circle cx="114" cy="62" r="3"/><circle cx="120" cy="62" r="3"/><circle cx="126" cy="62" r="3"/>
+            <circle cx="114" cy="68" r="3"/><circle cx="120" cy="68" r="3"/><circle cx="126" cy="68" r="3"/>
+          </g>
+        </svg>
+      </span>
+      <span>
+        <span class="num">โหมด 3</span>
+        <h2>โฮโลแกรมแบบกล่อง</h2>
+        <p>วางมือถือคว่ำบนกล่อง ดูอนุภาคลอยอยู่ข้างใน</p>
+        <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </a>
     <a class="card" href="#ar" id="cardAr">
       <span class="ill" aria-hidden="true">
         <svg viewBox="0 0 240 120" preserveAspectRatio="xMidYMid slice">
@@ -884,7 +915,7 @@ button, a { font: inherit; color: inherit; }
         </svg>
       </span>
       <span>
-        <span class="num">โหมด 3</span>
+        <span class="num">โหมด 4</span>
         <h2>AR</h2>
         <p>วางแบบจำลองอนุภาคในห้องของเรา</p>
         <span class="go">เริ่มเล่น <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
@@ -1025,7 +1056,7 @@ button, a { font: inherit; color: inherit; }
     <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
     <h1 id="m2Title">โฮโลแกรม</h1>
     <button class="tbtn" id="holoHelp" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5v.01"/></svg><span class="lbl">วิธีทำพีระมิด</span></button>
-    <a class="tbtn" href="#ar"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+    <a class="tbtn" href="#box"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
   </header>
   <div class="stage-area" id="holoArea">
     <canvas id="hcv" aria-label="ภาพอนุภาค 4 ด้านสำหรับพีระมิดใส"></canvas>
@@ -1086,7 +1117,71 @@ button, a { font: inherit; color: inherit; }
   </div>
 </section>
 
-<!-- ======================= MODE 3 ======================= -->
+<!-- ======================= MODE 3: hologram box ======================= -->
+<section class="view fixed-view v-holo v-box" id="vBox" hidden aria-labelledby="mBoxTitle">
+  <header class="topbar">
+    <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
+    <h1 id="mBoxTitle">กล่องโฮโลแกรม</h1>
+    <button class="tbtn" id="boxHelpBtn" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5v.01"/></svg><span class="lbl">วิธีทำกล่อง</span></button>
+    <a class="tbtn" href="#ar"><span class="lbl">ถัดไป</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+  </header>
+  <div class="stage-area">
+    <canvas id="bcv" aria-label="ภาพอนุภาคกลับหัวสำหรับกล่องโฮโลแกรม"></canvas>
+    <p class="holo-hint" hidden>แตะจอเพื่อกลับไปที่ปุ่ม</p>
+    <div class="dock box-dock" id="boxDock">
+      <div class="dock-state">
+        <span class="spill" data-pill></span>
+        <p class="sres" data-result hidden></p>
+        <p class="smsg" data-msg></p>
+      </div>
+      <div class="pbtns">
+        <button class="pbtn hot" type="button" data-bact="heat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>ร้อนขึ้น</button>
+        <button class="pbtn cold" type="button" data-bact="cool"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>เย็นลง</button>
+      </div>
+      <div class="dock-tools">
+        <label class="ptoggle"><input type="checkbox" id="boxAuto" checked> เปลี่ยนสถานะเอง</label>
+        <button class="minibtn" type="button" id="boxRot" aria-pressed="false">หมุนภาพ 180°</button>
+      </div>
+      <button class="pbtn show" type="button" id="boxGo">เริ่มฉาย</button>
+      <p class="dock-tip">ภาพบนจอกลับหัวเป็นปกติ พอสะท้อนในกล่องจะตั้งตรง</p>
+    </div>
+  </div>
+  <div class="sheet" id="boxHelpSheet" hidden>
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="boxHelpTitle">
+      <h2 id="boxHelpTitle">ทำกล่องโฮโลแกรม</h2>
+      <svg viewBox="0 0 320 210" role="img" aria-label="ภาพด้านข้างของกล่อง มือถือคว่ำจออยู่ด้านบน แผ่นใสเอียง 45 องศาจากขอบบนด้านหลังลงมาขอบล่างด้านหน้า แสงจากจอสะท้อนแผ่นใสออกมาทางด้านหน้า">
+        <text class="tp-text" x="135" y="24" text-anchor="middle">มือถือ คว่ำจอลง</text>
+        <rect x="78" y="34" width="114" height="11" rx="3" fill="#6E8BA8"/>
+        <line x1="82" y1="46" x2="188" y2="46" stroke="#4FE4F4" stroke-width="3"/>
+        <path class="tp-line" d="M70 50 H200 M70 50 V180 H200 M200 50 V62 M200 168 V180"/>
+        <line class="tp-sheet" x1="70" y1="50" x2="200" y2="180"/>
+        <path class="tp-ray" d="M135 48 V115 H258"/>
+        <path d="M258 109 L268 115 L258 121 Z" fill="#E0533D"/>
+        <g class="tp-dot" opacity="0.75"><circle cx="92" cy="114" r="4.5"/><circle cx="103" cy="114" r="4.5"/><circle cx="114" cy="114" r="4.5"/><circle cx="97" cy="124" r="4.5"/><circle cx="108" cy="124" r="4.5"/></g>
+        <text class="tp-text" x="103" y="150" text-anchor="middle">ภาพลอย</text>
+        <line class="tp-dim" x1="60" y1="90" x2="96" y2="76"/>
+        <text class="tp-text" x="56" y="96" text-anchor="end">แผ่นใส</text>
+        <text class="tp-text" x="56" y="114" text-anchor="end">เอียง 45°</text>
+        <ellipse cx="288" cy="115" rx="13" ry="8" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+        <circle cx="285" cy="115" r="3.5" fill="var(--ink)"/>
+        <text class="tp-text" x="290" y="146" text-anchor="middle">มองจาก</text>
+        <text class="tp-text" x="290" y="164" text-anchor="middle">ด้านหน้า</text>
+        <text class="tp-text" x="135" y="202" text-anchor="middle">ด้านหลัง ← กล่อง → ด้านหน้า (เจาะหน้าต่าง)</text>
+      </svg>
+      <ol>
+        <li>หากล่องกระดาษ ให้ความสูงเท่ากับความลึก ประมาณความกว้างของจอ (มือถือราว 7 ซม. · iPad ราว 16 ซม.) ส่วนความกว้างของกล่องให้ยาวพอ ๆ กับจอ</li>
+        <li>เจาะหน้าต่างด้านหน้า และเจาะช่องด้านบนให้พอดีกับจอ ถ้าทาด้านในเป็นสีดำได้ ภาพจะชัดขึ้น</li>
+        <li>ตัดแผ่นพลาสติกใสให้กว้างเท่ากล่อง ยาวประมาณ 1.4 เท่าของความสูง แล้วติดเฉียงจากขอบบนด้านหลังลงมาที่ขอบล่างด้านหน้า</li>
+        <li>กด “เริ่มฉาย” แล้ววางมือถือแนวนอนคว่ำจอลงบนช่องด้านบน (ถ้าล็อกการหมุนจอไว้ ให้ปลดล็อกก่อน)</li>
+        <li>ทำห้องให้มืด เปิดความสว่างจอสุด แล้วมองจากด้านหน้า ถ้าภาพกลับหัว ให้หมุนมือถือกลับด้าน หรือกด “หมุนภาพ 180°”</li>
+      </ol>
+      <p class="note">ตอนฉาย ภาพจะเปลี่ยนเป็นของแข็ง ของเหลว และแก๊สวนไปเอง (ปิดได้ที่ “เปลี่ยนสถานะเอง”) แตะจอเมื่อต้องการกลับมาที่ปุ่ม</p>
+      <button class="tbtn primary" id="boxHelpClose" type="button">เข้าใจแล้ว</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= MODE 4 ======================= -->
 <section class="view fixed-view v-ar" id="vAr" hidden aria-labelledby="m3Title">
   <header class="topbar">
     <a class="tbtn" href="#home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></svg><span class="lbl">หน้าหลัก</span></a>
@@ -1178,7 +1273,8 @@ button, a { font: inherit; color: inherit; }
   const fmt1 = (t) => { const r = Math.round(t * 10) / 10; return (r < 0 ? MINUS : '') + Math.abs(r).toFixed(1); };
 
   /* ====================== router ====================== */
-  const VIEWS = { home: $('vHome'), fridge: $('vFridge'), holo: $('vHolo'), ar: $('vAr') };
+  const VIEWS = { home: $('vHome'), fridge: $('vFridge'), holo: $('vHolo'), box: $('vBox'), ar: $('vAr') };
+  const FULL_VIEWS = ['holo', 'box', 'ar'];
   let view = 'home';
   let wakeLock = null;
   async function keepAwake(on) {
@@ -1195,13 +1291,15 @@ button, a { font: inherit; color: inherit; }
   }
   let holoHintT = 0;
   function setProjecting(on) {
-    const v = VIEWS.holo;
-    if (on === v.classList.contains('projecting')) return;
+    // on: the current hologram view; off: whichever view is projecting
+    const v = on ? VIEWS[view] : document.querySelector('.view.projecting');
+    if (!v || on === v.classList.contains('projecting')) return;
     v.classList.toggle('projecting', on);
+    const hint = v.querySelector('.holo-hint');
     clearTimeout(holoHintT);
-    $('holoHint').hidden = !on;
+    if (hint) hint.hidden = !on;
     if (on) {
-      holoHintT = setTimeout(() => { $('holoHint').hidden = true; }, 3000);
+      holoHintT = setTimeout(() => { if (hint) hint.hidden = true; }, 3000);
       const de = document.documentElement;
       if (!fsEl()) fsCall(de.requestFullscreen || de.webkitRequestFullscreen, de);
     } else if (fsEl()) {
@@ -1215,13 +1313,14 @@ button, a { font: inherit; color: inherit; }
     if (!VIEWS[name]) name = 'home';
     const prev = view;
     view = name;
-    if (name !== 'holo') setProjecting(false);
+    setProjecting(false);
     for (const [k, el] of Object.entries(VIEWS)) el.hidden = k !== name;
-    document.documentElement.classList.toggle('lock', name === 'holo' || name === 'ar');
+    document.documentElement.classList.toggle('lock', FULL_VIEWS.includes(name));
     if (prev === 'ar' && name !== 'ar') stopCamera();
-    keepAwake(name === 'holo' || name === 'ar');
+    keepAwake(FULL_VIEWS.includes(name));
     if (name === 'fridge') { requestAnimationFrame(() => { layout1(); place1(false); }); }
     if (name !== 'holo') $('helpSheet').hidden = true;
+    if (name !== 'box') $('boxHelpSheet').hidden = true;
     $('qSheet').hidden = true;
     $('checkCard').hidden = true;
     $('holoSide').hidden = true;
@@ -1718,8 +1817,8 @@ button, a { font: inherit; color: inherit; }
     lastPK = k;
     document.querySelectorAll('[data-pill]').forEach((el) => { el.textContent = PPILL[k]; });
     document.querySelectorAll('[data-msg]').forEach((el) => { el.textContent = PMSG[k]; });
-    document.querySelectorAll('[data-act="heat"]').forEach((b) => { b.disabled = ps.level >= 2; });
-    document.querySelectorAll('[data-act="cool"]').forEach((b) => { b.disabled = ps.level <= 0; });
+    document.querySelectorAll('[data-act="heat"], [data-bact="heat"]').forEach((b) => { b.disabled = ps.level >= 2; });
+    document.querySelectorAll('[data-act="cool"], [data-bact="cool"]').forEach((b) => { b.disabled = ps.level <= 0; });
     $('ckState').textContent = TRUTH[k] ? 'ตอนนี้: ' + PPILL[k] : 'กำลังเปลี่ยนสถานะ รอสักครู่';
     if (TRUTH[k] && k !== lastStable) { lastStable = k; resetChecklist(); }
     if (pending && k === pending.target) {
@@ -1954,14 +2053,45 @@ button, a { font: inherit; color: inherit; }
     { dx: 0, dy: -1, m: [-1, 0, 0, 1], az: Math.PI },
     { dx: -1, dy: 0, m: [0, 1, 1, 0], az: -Math.PI / 2 }
   ];
-  (() => {
+  // drag sideways to turn the model
+  function attachRotate(cv) {
     let drag = null;
-    hcv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, id: e.pointerId }; try { hcv.setPointerCapture(e.pointerId); } catch (err) {} lastRot = performance.now(); });
-    hcv.addEventListener('pointermove', (e) => { if (!drag || e.pointerId !== drag.id) return; az += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; lastRot = performance.now(); });
+    cv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, id: e.pointerId }; try { cv.setPointerCapture(e.pointerId); } catch (err) {} lastRot = performance.now(); });
+    cv.addEventListener('pointermove', (e) => { if (!drag || e.pointerId !== drag.id) return; az += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; lastRot = performance.now(); });
     const end = () => { drag = null; lastRot = performance.now(); };
-    hcv.addEventListener('pointerup', end);
-    hcv.addEventListener('pointercancel', end);
-  })();
+    cv.addEventListener('pointerup', end);
+    cv.addEventListener('pointercancel', end);
+  }
+  // in full screen a tap (not a drag, which turns the model) brings the controls back
+  function attachTapExit(cv) {
+    let tap = null;
+    cv.addEventListener('pointerdown', (e) => { tap = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+    cv.addEventListener('pointerup', (e) => {
+      const still = tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 10 && performance.now() - tap.t < 400;
+      tap = null;
+      if (still) setProjecting(false);
+    });
+  }
+  attachRotate(hcv);
+  attachTapExit(hcv);
+  // one view of the model into `off` (v × v css px): model in the middle band, text and icon keep to the top edge and the left strip
+  function renderView(v, dpr, azi, label) {
+    const vp = Math.max(1, Math.round(v * dpr));
+    if (off.width !== vp) { off.width = vp; off.height = vp; }
+    const o = off.getContext('2d');
+    o.setTransform(dpr, 0, 0, dpr, 0, 0);
+    o.clearRect(0, 0, v, v);
+    drawParticles(o, v / 2, v * 0.49, v / 8.2, azi, el, 'glow');
+    drawMacro(o, v);
+    let fs = Math.max(9, v * 0.045);
+    o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
+    const tw = o.measureText(label).width;
+    if (tw > v * 0.56) { fs *= (v * 0.56) / tw; o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif'; }
+    o.fillStyle = '#BFF6FC';
+    o.textAlign = 'center';
+    o.textBaseline = 'top';
+    o.fillText(label, v / 2, v * 0.02);
+  }
   function drawHolo() {
     const { w, h, dpr } = fitCanvas(hcv);
     if (!w || !h) return;
@@ -1976,9 +2106,6 @@ button, a { font: inherit; color: inherit; }
     const S = Math.max(80, Math.min(fr.w, fr.h) - 12);
     const outer = (S / 2) * 0.98 * holoScale, inner = 0.15 * outer;
     const v = outer - inner, c = (inner + outer) / 2;
-    const vp = Math.max(1, Math.round(v * dpr));
-    if (off.width !== vp) { off.width = vp; off.height = vp; }
-    const o = off.getContext('2d');
     const cx = fr.cx, cy = fr.cy;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.strokeStyle = 'rgba(255,255,255,0.22)';
@@ -1986,19 +2113,8 @@ button, a { font: inherit; color: inherit; }
     ctx.strokeRect(cx - inner, cy - inner, inner * 2, inner * 2);
     const label = PPILL[pKey()];
     for (const V of HVIEWS) {
-      o.setTransform(dpr, 0, 0, dpr, 0, 0);
-      o.clearRect(0, 0, v, v);
-      // model in the middle band; text and icon keep to the outer edge and the left strip
-      drawParticles(o, v / 2, v * 0.49, v / 8.2, az + V.az, el, 'glow');
-      drawMacro(o, v);
-      let fs = Math.max(9, v * 0.045);
-      o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
-      const tw = o.measureText(label).width;
-      if (tw > v * 0.56) { fs *= (v * 0.56) / tw; o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif'; }
-      o.fillStyle = '#BFF6FC';
-      o.textAlign = 'center';
-      o.textBaseline = 'top';
-      o.fillText(label, v / 2, v * 0.02);
+      // the view's top edge (text) faces outward, toward the pyramid's wide end
+      renderView(v, dpr, az + V.az, label);
       const m = V.m;
       ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * (cx + V.dx * c), dpr * (cy + V.dy * c));
       ctx.drawImage(off, -v / 2, -v / 2, v, v);
@@ -2048,19 +2164,55 @@ button, a { font: inherit; color: inherit; }
   $('hPlus').addEventListener('click', () => setHoloScale(holoScale + 0.1));
   setHoloScale(holoScale);
   $('holoFull').addEventListener('click', () => setProjecting(true));
-  // in full screen a tap (not a drag, which turns the model) brings the controls back
-  (() => {
-    let tap = null;
-    hcv.addEventListener('pointerdown', (e) => { tap = { x: e.clientX, y: e.clientY, t: performance.now() }; });
-    hcv.addEventListener('pointerup', (e) => {
-      const still = tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 10 && performance.now() - tap.t < 400;
-      tap = null;
-      if (still) setProjecting(false);
-    });
-  })();
   $('holoHelp').addEventListener('click', () => { $('helpSheet').hidden = false; $('helpClose').focus(); });
   $('helpClose').addEventListener('click', () => { $('helpSheet').hidden = true; $('holoHelp').focus(); });
   $('helpSheet').addEventListener('click', (e) => { if (e.target === $('helpSheet')) $('helpSheet').hidden = true; });
+
+  /* ---------- hologram box: one view for a phone lying face down on a box with one 45° sheet ---------- */
+  const bcv = $('bcv'), boxDock = $('boxDock'), boxAuto = $('boxAuto');
+  const NO_SIDE = { hidden: true, offsetWidth: 0 };
+  let boxRot = false, autoDir = 1, autoHold = 0;
+  attachRotate(bcv);
+  attachTapExit(bcv);
+  function drawBox() {
+    const { w, h, dpr } = fitCanvas(bcv);
+    if (!w || !h) return;
+    const ctx = bcv.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, bcv.width, bcv.height);
+    const fr = freeRect(w, h, boxDock, NO_SIDE, 0);
+    const v = Math.max(80, Math.min(fr.w, fr.h) - 8);
+    renderView(v, dpr, az, PPILL[pKey()]);
+    // the sheet flips the screen top-to-bottom, so the view is drawn upside down;
+    // a phone laid the other way round needs the left-right flip instead (= turned 180°)
+    const sx = boxRot ? -1 : 1, sy = boxRot ? 1 : -1;
+    ctx.setTransform(dpr * sx, 0, 0, dpr * sy, dpr * fr.cx, dpr * fr.cy);
+    ctx.drawImage(off, -v / 2, -v / 2, v, v);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  // nobody can press buttons on a phone lying face down, so the show runs itself:
+  // solid → liquid → gas → liquid → solid …, holding each state for a while once it has settled
+  const AUTO_HOLD = 6;
+  function stepAuto(dt) {
+    if (!boxAuto.checked || pKey() !== STABLE[ps.level]) { autoHold = 0; return; }
+    autoHold += dt;
+    if (autoHold < AUTO_HOLD) return;
+    autoHold = 0;
+    if (ps.level >= 2) autoDir = -1; else if (ps.level <= 0) autoDir = 1;
+    applyLevel(ps.level + autoDir, null);
+  }
+  // heat / cool by hand takes over from the show
+  document.querySelectorAll('[data-bact]').forEach((b) => b.addEventListener('click', () => {
+    boxAuto.checked = false;
+    const to = clamp(ps.level + (b.dataset.bact === 'heat' ? 1 : -1), 0, 2);
+    if (to !== ps.level) applyLevel(to, null);
+  }));
+  $('boxRot').addEventListener('click', () => { boxRot = !boxRot; $('boxRot').setAttribute('aria-pressed', String(boxRot)); });
+  $('boxGo').addEventListener('click', () => { autoHold = 0; setProjecting(true); });
+  $('boxHelpBtn').addEventListener('click', () => { $('boxHelpSheet').hidden = false; $('boxHelpClose').focus(); });
+  $('boxHelpClose').addEventListener('click', () => { $('boxHelpSheet').hidden = true; $('boxHelpBtn').focus(); });
+  $('boxHelpSheet').addEventListener('click', (e) => { if (e.target === $('boxHelpSheet')) $('boxHelpSheet').hidden = true; });
 
   /* ---------- AR ---------- */
   const acv = $('acv'), arVid = $('arVid'), arImg = $('arImg');
@@ -2258,12 +2410,13 @@ button, a { font: inherit; color: inherit; }
       fx1(dt);
       uiT += dt;
       if (uiT > 0.1) { uiT = 0; tray1(); }
-    } else if (view === 'holo' || view === 'ar') {
+    } else if (view === 'holo' || view === 'box' || view === 'ar') {
+      if (view === 'box') stepAuto(dt);
       pStep(dt);
       stepParticles(dt);
       if (!reduceMotion && now - lastRot > 2500) az += dt * 0.35;
       updatePUI(false);
-      if (view === 'holo') drawHolo(); else drawAR();
+      if (view === 'holo') drawHolo(); else if (view === 'box') drawBox(); else drawAR();
     }
     requestAnimationFrame(frame);
   }
