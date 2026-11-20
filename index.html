@@ -558,6 +558,26 @@ button, a { font: inherit; color: inherit; }
 .pbtn.hot svg circle { fill: currentColor; }
 .sizer { display: inline-flex; align-items: center; gap: 4px; color: #9FB7C9; font-size: 14px; }
 .sizer button { min-width: 40px; min-height: 40px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.25); background: transparent; color: #E6F7FF; font-size: 20px; cursor: pointer; }
+.sizer button:disabled { opacity: 0.35; cursor: default; }
+/* full screen: only the four views on black, so they get the whole screen and nothing else reflects in the pyramid */
+.v-holo.projecting .topbar, .v-holo.projecting .dock, .v-holo.projecting .side-panel { display: none !important; }
+.v-holo.projecting .stage-area { top: 0; }
+.holo-hint {
+  position: absolute;
+  z-index: 4;
+  /* the corners stay empty in the cross-shaped layout */
+  left: max(12px, env(safe-area-inset-left, 0px));
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #9FB7C9;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.holo-hint[hidden] { display: none; }
 /* short screens (phone held sideways): slimmer top bar so the hologram keeps its height */
 @media (max-height: 500px) {
   .fixed-view .topbar { min-height: 44px; padding-top: calc(2px + env(safe-area-inset-top, 0px)); padding-bottom: 2px; }
@@ -1009,6 +1029,7 @@ button, a { font: inherit; color: inherit; }
   </header>
   <div class="stage-area" id="holoArea">
     <canvas id="hcv" aria-label="ภาพอนุภาค 4 ด้านสำหรับพีระมิดใส"></canvas>
+    <p class="holo-hint" id="holoHint" hidden>แตะจอเพื่อกลับไปที่ปุ่ม</p>
     <div class="side-panel holo-side" id="holoSide" hidden></div>
     <div class="dock holo-dock" id="holoDock">
       <div class="zoom" data-zoom data-state="solid">
@@ -1038,6 +1059,7 @@ button, a { font: inherit; color: inherit; }
         <button class="minibtn" type="button" data-check>เช็กลิสต์ 3 ข้อ</button>
         <label class="ptoggle"><input type="checkbox" data-predict checked> ทายก่อนกด</label>
         <span class="sizer"><span class="lbl">ขนาด</span> <button type="button" id="hMinus" aria-label="ย่อภาพ">−</button><button type="button" id="hPlus" aria-label="ขยายภาพ">+</button></span>
+        <button class="minibtn" type="button" id="holoFull">เต็มจอ</button>
       </div>
       <p class="dock-tip">คว่ำพีระมิดใสลงตรงกรอบสี่เหลี่ยมกลางจอ ทำห้องให้มืด แล้วมองจากด้านข้าง</p>
     </div>
@@ -1056,7 +1078,7 @@ button, a { font: inherit; color: inherit; }
         <li>ตัดแผ่นพลาสติกใสแข็ง (แผ่นใสปกรายงานหรือฝากล่องซีดี) เป็นรูปสี่เหลี่ยมคางหมู 4 ชิ้นตามแบบ ถ้าใช้มือถือ ใช้ขนาด 1, 6 และ 3.5 ซม.</li>
         <li>ติดเทปใสที่ขอบเฉียง ให้เป็นพีระมิดที่ตัดยอด</li>
         <li>วาง iPad ราบ แล้วคว่ำพีระมิดให้ด้านสั้นแตะจอตรงกรอบสี่เหลี่ยมกลางจอ</li>
-        <li>ทำห้องให้มืด เปิดความสว่างจอสุด แล้วมองจากด้านข้าง</li>
+        <li>ทำห้องให้มืด เปิดความสว่างจอสุด กดปุ่ม “เต็มจอ” ให้ภาพใหญ่ที่สุด แล้วมองจากด้านข้าง (แตะจอเพื่อกลับไปที่ปุ่ม)</li>
       </ol>
       <p class="note">ภาพที่เห็นเป็นภาพสะท้อนบนแผ่นใส (เทคนิค Pepper’s ghost) ไม่ใช่โฮโลแกรมแท้ แต่ดูเหมือนลอยเป็น 3 มิติ และดูได้รอบ 4 ด้าน</p>
       <button class="tbtn primary" id="helpClose" type="button">เข้าใจแล้ว</button>
@@ -1165,10 +1187,35 @@ button, a { font: inherit; color: inherit; }
       if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
     } catch (e) { wakeLock = null; }
   }
+  // hologram full screen: hide the bars and controls (and the browser's, where it allows) until the screen is tapped
+  function fsEl() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+  function fsCall(fn, target) {
+    if (!fn) return;
+    try { const p = fn.call(target); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  }
+  let holoHintT = 0;
+  function setProjecting(on) {
+    const v = VIEWS.holo;
+    if (on === v.classList.contains('projecting')) return;
+    v.classList.toggle('projecting', on);
+    clearTimeout(holoHintT);
+    $('holoHint').hidden = !on;
+    if (on) {
+      holoHintT = setTimeout(() => { $('holoHint').hidden = true; }, 3000);
+      const de = document.documentElement;
+      if (!fsEl()) fsCall(de.requestFullscreen || de.webkitRequestFullscreen, de);
+    } else if (fsEl()) {
+      fsCall(document.exitFullscreen || document.webkitExitFullscreen, document);
+    }
+  }
+  const onFsChange = () => { if (!fsEl()) setProjecting(false); };
+  document.addEventListener('fullscreenchange', onFsChange);
+  document.addEventListener('webkitfullscreenchange', onFsChange);
   function go(name) {
     if (!VIEWS[name]) name = 'home';
     const prev = view;
     view = name;
+    if (name !== 'holo') setProjecting(false);
     for (const [k, el] of Object.entries(VIEWS)) el.hidden = k !== name;
     document.documentElement.classList.toggle('lock', name === 'holo' || name === 'ar');
     if (prev === 'ar' && name !== 'ar') stopCamera();
@@ -1925,8 +1972,9 @@ button, a { font: inherit; color: inherit; }
     ctx.fillRect(0, 0, hcv.width, hcv.height);
     // lay the four views out only in the space the dock / side panel leave free
     const fr = freeRect(w, h, holoDock, holoSide, 0);
-    const S = Math.max(80, Math.min(fr.w, fr.h) - 12), R = (S / 2) * holoScale;
-    const inner = 0.12 * R, outer = Math.min(0.8 * R, (S / 2) * 0.98);
+    // holoScale 1 = the four views fill the free square; the centre square keeps the pyramid-tip ratio
+    const S = Math.max(80, Math.min(fr.w, fr.h) - 12);
+    const outer = (S / 2) * 0.98 * holoScale, inner = 0.15 * outer;
     const v = outer - inner, c = (inner + outer) / 2;
     const vp = Math.max(1, Math.round(v * dpr));
     if (off.width !== vp) { off.width = vp; off.height = vp; }
@@ -1941,16 +1989,16 @@ button, a { font: inherit; color: inherit; }
       o.setTransform(dpr, 0, 0, dpr, 0, 0);
       o.clearRect(0, 0, v, v);
       // model in the middle band; text and icon keep to the outer edge and the left strip
-      drawParticles(o, v / 2, v * 0.53, v / 9.4, az + V.az, el, 'glow');
+      drawParticles(o, v / 2, v * 0.49, v / 8.2, az + V.az, el, 'glow');
       drawMacro(o, v);
-      let fs = Math.max(9, v * 0.06);
+      let fs = Math.max(9, v * 0.045);
       o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif';
       const tw = o.measureText(label).width;
       if (tw > v * 0.56) { fs *= (v * 0.56) / tw; o.font = '600 ' + fs.toFixed(1) + 'px Mitr, "Noto Sans Thai", sans-serif'; }
       o.fillStyle = '#BFF6FC';
       o.textAlign = 'center';
       o.textBaseline = 'top';
-      o.fillText(label, v / 2, v * 0.025);
+      o.fillText(label, v / 2, v * 0.02);
       const m = V.m;
       ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * (cx + V.dx * c), dpr * (cy + V.dy * c));
       ctx.drawImage(off, -v / 2, -v / 2, v, v);
@@ -1964,8 +2012,8 @@ button, a { font: inherit; color: inherit; }
     gas: new Path2D('M55 12 C 75 14, 80 34, 66 44 C 82 52, 80 74, 62 80 C 58 92, 40 94, 34 84 C 18 82, 16 62, 30 56 C 20 44, 30 28, 44 30 C 44 20, 48 12, 55 12 Z')
   };
   function drawMacro(o, v) {
-    // sits in the empty strip left of the model (the model never reaches x < 0.21 v)
-    const s = v * 0.13, x = v * 0.03, y = v * 0.2;
+    // sits in the empty strip left of the model (the model never reaches x < 0.18 v)
+    const s = v * 0.1, x = v * 0.025, y = v * 0.17;
     const k = domState();
     o.save();
     o.translate(x, y);
@@ -1987,11 +2035,29 @@ button, a { font: inherit; color: inherit; }
     o.beginPath(); o.moveTo(lx + lr * 0.7, ly + lr * 0.7); o.lineTo(lx + lr * 1.35, ly + lr * 1.35); o.stroke();
     o.setLineDash([3, 4]);
     o.lineWidth = Math.max(1, s * 0.035);
-    o.beginPath(); o.moveTo(lx + lr * 1.15, ly); o.lineTo(v * 0.19, ly); o.stroke();
+    o.beginPath(); o.moveTo(lx + lr * 1.15, ly); o.lineTo(v * 0.17, ly); o.stroke();
     o.restore();
   }
-  $('hMinus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale - 0.1) * 10) / 10, 0.6, 1.3); });
-  $('hPlus').addEventListener('click', () => { holoScale = clamp(Math.round((holoScale + 0.1) * 10) / 10, 0.6, 1.3); });
+  const HOLO_MIN = 0.5, HOLO_MAX = 1;
+  function setHoloScale(s) {
+    holoScale = clamp(Math.round(s * 10) / 10, HOLO_MIN, HOLO_MAX);
+    $('hMinus').disabled = holoScale <= HOLO_MIN;
+    $('hPlus').disabled = holoScale >= HOLO_MAX;
+  }
+  $('hMinus').addEventListener('click', () => setHoloScale(holoScale - 0.1));
+  $('hPlus').addEventListener('click', () => setHoloScale(holoScale + 0.1));
+  setHoloScale(holoScale);
+  $('holoFull').addEventListener('click', () => setProjecting(true));
+  // in full screen a tap (not a drag, which turns the model) brings the controls back
+  (() => {
+    let tap = null;
+    hcv.addEventListener('pointerdown', (e) => { tap = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+    hcv.addEventListener('pointerup', (e) => {
+      const still = tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 10 && performance.now() - tap.t < 400;
+      tap = null;
+      if (still) setProjecting(false);
+    });
+  })();
   $('holoHelp').addEventListener('click', () => { $('helpSheet').hidden = false; $('helpClose').focus(); });
   $('helpClose').addEventListener('click', () => { $('helpSheet').hidden = true; $('holoHelp').focus(); });
   $('helpSheet').addEventListener('click', (e) => { if (e.target === $('helpSheet')) $('helpSheet').hidden = true; });
